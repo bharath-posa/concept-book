@@ -36,6 +36,7 @@ Usage examples:
     python scripts/batch_generate.py --language zh
 """
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -123,12 +124,22 @@ def _get_application_ids(domain_id: str) -> list[str]:
 
 
 def _already_generated(catalog_entry: dict, target: str, model: str, language: str, level: str) -> bool:
+    """True if the catalog lists this book AND its file is on disk (a catalog row whose HTML was deleted is redone)."""
     variant_prefix = f"output/{level}.{language}/"
+    domain_dir = DOMAINS_DIR / catalog_entry["id"]
     return any(
         b["target"] == target and b.get("model") == model and b.get("language", "en") == language
         and b.get("file", "").startswith(variant_prefix)
+        and (domain_dir / b["file"]).is_file()
         for b in catalog_entry.get("books", [])
     )
+
+
+def _book_path(domain_id: str, target: str, level: str, language: str, model: str) -> Path:
+    return DOMAINS_DIR / domain_id / "output" / f"{level}.{language}" / model / "html" / f"book_{target}.html"
+
+
+_VARIANT_DIR = re.compile(r"^output/([^/]+\.[^/]+)/")   # output/<level>.<language>/...; legacy paths have no dot there
 
 
 def _mark_generated(domain_id: str, target: str, level: str, language: str, model: str) -> None:
@@ -158,11 +169,15 @@ def _mark_generated(domain_id: str, target: str, level: str, language: str, mode
             ):
                 books.append({"target": target, "file": book_file, "model": model, "language": language})
             d["has_book"] = True
-            # Preserve legacy entries (no model field) and entries from other models/languages
-            other = [
-                c for c in d.get("generated_concepts", [])
-                if c.get("model") != model or c.get("language", "en") != language
-            ]
+            # Preserve entries from other models/languages, and from other levels of this model+language;
+            # replace this variant's own entries (and legacy ones with no level in their path).
+            def _keep(c: dict) -> bool:
+                if c.get("model") != model or c.get("language", "en") != language:
+                    return True
+                m = _VARIANT_DIR.match(c.get("file", ""))
+                return bool(m) and m.group(1) != variant
+
+            other = [c for c in d.get("generated_concepts", []) if _keep(c)]
             for c in new_concepts:
                 c["language"] = language
             d["generated_concepts"] = sorted(other + new_concepts, key=lambda c: c["label"])
@@ -314,6 +329,10 @@ def main(
         click.echo(f"{'='*70}")
 
         ok = _run_spl3(did, target, eff_level, language, model, spl_dir, llm, skip_cache)
+        book = _book_path(did, target, eff_level, language, model)
+        if ok and not book.is_file():
+            click.echo(f"[warn] spl3 exited 0 but {book} was not written; not marking it done", err=True)
+            ok = False
 
         if ok:
             _mark_generated(did, target, eff_level, language, model)
