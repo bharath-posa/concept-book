@@ -135,8 +135,13 @@ def _already_generated(catalog_entry: dict, target: str, model: str, language: s
     )
 
 
+def _book_name(target: str, language: str) -> str:
+    """spl3 names the book file book_<target>.html for English and book_<target>_<lang>.html for any other language."""
+    return f"book_{target}.html" if language == "en" else f"book_{target}_{language}.html"
+
+
 def _book_path(domain_id: str, target: str, level: str, language: str, model: str) -> Path:
-    return DOMAINS_DIR / domain_id / "output" / f"{level}.{language}" / model / "html" / f"book_{target}.html"
+    return DOMAINS_DIR / domain_id / "output" / f"{level}.{language}" / model / "html" / _book_name(target, language)
 
 
 _VARIANT_DIR = re.compile(r"^output/([^/]+\.[^/]+)/")   # output/<level>.<language>/...; legacy paths have no dot there
@@ -161,10 +166,13 @@ def _mark_generated(domain_id: str, target: str, level: str, language: str, mode
             if d["id"] != domain_id:
                 continue
             books: list[dict] = d.setdefault("books", [])
-            book_file = f"output/{variant}/{model}/html/book_{target}.html"
+            book_file = f"output/{variant}/{model}/html/{_book_name(target, language)}"
+            # One row per target + model + language + LEVEL (the variant in the file path). Matching without the
+            # level made a college.zh run look already registered when intro.zh had the same target.
             if not any(
                 b["target"] == target and b.get("model") == model
                 and b.get("language", "en") == language
+                and b.get("file", "").startswith(f"output/{variant}/")
                 for b in books
             ):
                 books.append({"target": target, "file": book_file, "model": model, "language": language})
