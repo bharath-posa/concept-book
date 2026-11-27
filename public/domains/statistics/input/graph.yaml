@@ -1,0 +1,174 @@
+domain: statistics
+primitives:
+  observation:
+    symbol: xᵢ
+    defines: first radical — one recorded value about one individual (a height, a vote, a test score)
+    tier: 0
+  population:
+    symbol: N
+    defines: first radical — the whole group we want to learn about (all voters, every bulb a factory makes)
+    tier: 0
+  probability:
+    symbol: P
+    defines: second radical — chance, borrowed from probability; it lets us reason from a sample to the population
+    tier: 0
+    introduced_in: probability
+first_radical_primitives:
+- observation
+- population
+concepts:
+  variables:
+    composed_of:
+    - observation
+    defines: a characteristic recorded for each individual — categorical (eye colour) or numerical (height)
+    verifier: sympy
+    tier: 1
+    play: sort survey answers into categorical and numerical
+  sample:
+    composed_of:
+    - population
+    defines: a smaller group we actually measure, chosen from the population
+    verifier: sympy
+    tier: 1
+    play: pick 20 dots from a crowd of 1000
+  data_visualization:
+    composed_of:
+    - variables
+    defines: bar charts for categories; histograms and box plots for numbers — the shape of the data at a glance
+    verifier: sympy
+    tier: 2
+    play: drag the bin width of a histogram
+  measures_of_center:
+    composed_of:
+    - variables
+    defines: mean (the balance point), median (the middle value) and mode (the most common) — a typical value
+    verifier: sympy
+    tier: 2
+    play: add an outlier and watch the mean move but not the median
+  sampling:
+    composed_of:
+    - sample
+    - probability
+    defines: random sampling gives every individual a known chance of being chosen; convenience samples bring bias
+    verifier: sympy
+    tier: 2
+    play: compare a random sample with asking only your friends
+  measures_of_spread:
+    composed_of:
+    - measures_of_center
+    defines: range, interquartile range and standard deviation — how far values typically sit from the center
+    verifier: sympy
+    tier: 3
+    play: stretch a dot plot and watch the standard deviation grow
+  experimental_design:
+    composed_of:
+    - sampling
+    defines: random assignment to treatment and control groups — the only way data can show cause and effect
+    verifier: sympy
+    tier: 3
+    play: assign patients at random and compare the groups
+  z_score:
+    composed_of:
+    - measures_of_center
+    - measures_of_spread
+    defines: z = (x − mean) / standard deviation — how many standard deviations a value is from the mean
+    verifier: sympy
+    tier: 4
+    play: compare two test scores from classes with different averages
+  normal_model:
+    composed_of:
+    - measures_of_spread
+    - probability
+    defines: 'using the bell curve to describe data: about 68%, 95% and 99.7% of values within 1, 2 and 3 standard
+      deviations'
+    verifier: sympy
+    tier: 4
+    play: fit a bell curve over a histogram of heights
+  correlation:
+    composed_of:
+    - variables
+    - measures_of_spread
+    defines: r, from −1 to 1 — the strength and direction of a straight-line relationship between two numerical
+      variables; correlation is not causation
+    verifier: sympy
+    tier: 4
+    play: drag points in a scatter plot and watch r change
+  sampling_distribution:
+    composed_of:
+    - sampling
+    - measures_of_spread
+    defines: how a statistic (like a sample mean) varies from sample to sample
+    verifier: sympy
+    tier: 4
+    play: draw 500 samples and plot all their means
+  linear_regression:
+    composed_of:
+    - correlation
+    defines: the best straight line through a scatter plot, ŷ = a + bx, used to predict one variable from another
+    verifier: sympy
+    tier: 5
+    play: drag a line until the squared errors are smallest
+  central_limit_theorem:
+    composed_of:
+    - sampling_distribution
+    - normal_model
+    defines: means of large random samples follow a normal curve centered on the population mean, with spread σ/√n
+      — whatever the population's shape
+    verifier: sympy
+    tier: 5
+    play: sample from a lopsided population and watch the means form a bell
+  confidence_interval:
+    composed_of:
+    - central_limit_theorem
+    - z_score
+    defines: estimate ± margin of error — a range that captures the true population value in, say, 95% of samples
+    verifier: sympy
+    tier: 6
+    play: build 100 intervals and count how many catch the true value
+  hypothesis_test:
+    composed_of:
+    - central_limit_theorem
+    - probability
+    defines: assume no effect (the null hypothesis), then ask how surprising the data would be if that were true
+    verifier: sympy
+    tier: 6
+    play: test whether a coin is fair from 100 flips
+  p_value:
+    composed_of:
+    - hypothesis_test
+    defines: the chance of results at least this extreme if the null hypothesis were true; small p-values are evidence
+      against it, not proof
+    verifier: sympy
+    tier: 7
+    play: slide the observed result and watch the p-value shrink
+applications:
+  opinion_polls:
+    needs:
+    - confidence_interval
+    - sampling
+    domain: opinion polling
+    defines: how 1000 people can tell us what millions think, with a margin of error
+  clinical_trials:
+    needs:
+    - hypothesis_test
+    - experimental_design
+    domain: clinical trials
+    defines: deciding whether a new medicine really works better than a placebo
+  ab_testing:
+    needs:
+    - hypothesis_test
+    - p_value
+    domain: A/B testing on websites and apps
+    defines: showing two versions to random users and testing which one really performs better
+  sports_analytics:
+    needs:
+    - linear_regression
+    - z_score
+    domain: sports analytics
+    defines: comparing players across eras and predicting performance from data
+  quality_control_charts:
+    needs:
+    - normal_model
+    - measures_of_spread
+    domain: quality control charts
+    defines: spotting when a production line drifts outside its normal range

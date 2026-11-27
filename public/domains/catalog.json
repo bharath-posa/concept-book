@@ -774,6 +774,40 @@
     "default_level": "college"
   },
   {
+    "id": "statistics",
+    "name": "Statistics",
+    "description": "From data and samples to center and spread, regression, the central limit theorem and hypothesis tests.",
+    "capstone": "p_value",
+    "nodes": 24,
+    "edges": 34,
+    "primitives": 3,
+    "concepts": 16,
+    "applications": 5,
+    "tags": [
+      "math"
+    ],
+    "has_navigator": true,
+    "has_book": false,
+    "default_level": "core"
+  },
+  {
+    "id": "probability",
+    "name": "Probability",
+    "description": "From outcomes and events to conditional probability, Bayes' theorem, expected value and the bell curve.",
+    "capstone": "normal_distribution",
+    "nodes": 25,
+    "edges": 39,
+    "primitives": 4,
+    "concepts": 16,
+    "applications": 5,
+    "tags": [
+      "math"
+    ],
+    "has_navigator": true,
+    "has_book": false,
+    "default_level": "core"
+  },
+  {
     "id": "mechanics",
     "name": "Classical Mechanics",
     "description": "From Newton's laws to Lagrangian dynamics.",

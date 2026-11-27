@@ -1,0 +1,185 @@
+domain: probability
+primitives:
+  outcome:
+    symbol: ω
+    defines: first radical — one possible result of a random experiment (a coin landing heads, a die showing 4)
+    tier: 0
+  event:
+    symbol: A ⊆ Ω
+    defines: first radical — a set of outcomes we care about (rolling an even number)
+    tier: 0
+  chance:
+    symbol: P(A) ∈ [0,1]
+    defines: second radical — a number from 0 (impossible) to 1 (certain) measuring how likely an event is; the
+      whole sample space has chance 1
+    tier: 0
+  counting:
+    symbol: n · m
+    defines: the floor for counting — systematic enumeration; if one choice has n options and the next m, together
+      there are n·m
+    tier: 0
+first_radical_primitives:
+- outcome
+- event
+concepts:
+  sample_space:
+    composed_of:
+    - outcome
+    - event
+    defines: Ω — the set of all possible outcomes of an experiment; every event is a subset of it
+    verifier: sympy
+    tier: 1
+    play: list every outcome of two coin flips and pick out the events
+  complement_rule:
+    composed_of:
+    - event
+    - chance
+    defines: P(not A) = 1 − P(A) — the chance something does not happen
+    verifier: sympy
+    tier: 1
+    play: slide P(A) and watch P(not A) mirror it
+  permutations_combinations:
+    composed_of:
+    - counting
+    defines: nPr counts ordered arrangements, nCr = n!/(r!(n−r)!) counts unordered selections
+    verifier: sympy
+    tier: 1
+    play: line up 3 of 5 cards, then just choose 3 of 5
+  equally_likely_outcomes:
+    composed_of:
+    - sample_space
+    - chance
+    - counting
+    defines: classical probability — when all outcomes are equally likely, P(A) = |A| / |Ω|
+    verifier: sympy
+    tier: 2
+    play: roll virtual dice and compare counted and observed chances
+  addition_rule:
+    composed_of:
+    - event
+    - chance
+    - sample_space
+    defines: P(A or B) = P(A) + P(B) − P(A and B) — do not count the overlap twice
+    verifier: sympy
+    tier: 2
+    play: drag two overlapping circles in a Venn diagram
+  conditional_probability:
+    composed_of:
+    - event
+    - chance
+    - sample_space
+    defines: P(A | B) = P(A and B) / P(B) — the chance of A once we know B happened; the sample space shrinks to
+      B
+    verifier: sympy
+    tier: 2
+    play: filter a table of people and recompute the chance
+  random_variable:
+    composed_of:
+    - outcome
+    - sample_space
+    defines: a rule that attaches a number to each outcome (the total of two dice, the number of heads)
+    verifier: sympy
+    tier: 2
+    play: map each two-dice outcome to its total
+  independence:
+    composed_of:
+    - conditional_probability
+    defines: 'A and B are independent when knowing B does not change A: P(A | B) = P(A), equivalently P(A and B)
+      = P(A)·P(B)'
+    verifier: sympy
+    tier: 3
+    play: flip a coin after a die roll and check nothing changes
+  multiplication_rule:
+    composed_of:
+    - conditional_probability
+    defines: P(A and B) = P(A) · P(B | A) — chances along a path of a tree diagram multiply
+    verifier: sympy
+    tier: 3
+    play: build a probability tree and multiply along branches
+  probability_distribution:
+    composed_of:
+    - random_variable
+    - chance
+    defines: the list of a random variable's values with their chances, adding to 1 — the shape of uncertainty
+    verifier: sympy
+    tier: 3
+    play: drag bars of a distribution so they always total 1
+  bayes_theorem:
+    composed_of:
+    - conditional_probability
+    - multiplication_rule
+    defines: P(A | B) = P(B | A) · P(A) / P(B) — turning the chance of evidence given a cause into the chance of
+      the cause given the evidence
+    verifier: sympy
+    tier: 4
+    play: 'a disease test: change the base rate and see the true chance of being ill'
+  expected_value:
+    composed_of:
+    - probability_distribution
+    defines: E[X] = Σ x · P(x) — the long-run average of a random variable
+    verifier: sympy
+    tier: 4
+    play: play a game thousands of times and watch the average settle
+  binomial_distribution:
+    composed_of:
+    - probability_distribution
+    - permutations_combinations
+    - independence
+    defines: 'the chance of k successes in n independent tries, each with chance p: C(n,k) pᵏ (1−p)ⁿ⁻ᵏ'
+    verifier: sympy
+    tier: 4
+    play: flip n coins with bias p and watch the histogram
+  variance:
+    composed_of:
+    - expected_value
+    defines: Var(X) = E[(X − E[X])²] — how far values typically spread from the average; its square root is the
+      standard deviation
+    verifier: sympy
+    tier: 5
+    play: compare a steady and a risky game with the same average
+  law_of_large_numbers:
+    composed_of:
+    - expected_value
+    - independence
+    defines: the average of many independent tries gets closer and closer to the expected value
+    verifier: sympy
+    tier: 5
+    play: run 10, 100, 10 000 trials and watch the average converge
+  normal_distribution:
+    composed_of:
+    - probability_distribution
+    - variance
+    defines: the bell curve, fixed by its mean and standard deviation; about 68% of values lie within one standard
+      deviation of the mean
+    verifier: sympy
+    tier: 6
+    play: add up many dice and watch a bell curve appear
+applications:
+  medical_testing:
+    needs:
+    - bayes_theorem
+    domain: medical testing
+    defines: how likely you are to be ill after a positive test depends on how common the illness is — Bayes' theorem
+  games_and_gambling:
+    needs:
+    - expected_value
+    - equally_likely_outcomes
+    domain: games and gambling
+    defines: why the house always wins in the long run — expected value of every bet
+  insurance_and_risk:
+    needs:
+    - expected_value
+    - variance
+    domain: insurance and risk
+    defines: pricing policies from expected losses and their spread
+  quality_control:
+    needs:
+    - binomial_distribution
+    domain: manufacturing quality control
+    defines: how many faulty items to expect in a batch, and when a batch is suspicious
+  weather_forecasting:
+    needs:
+    - conditional_probability
+    - law_of_large_numbers
+    domain: weather forecasting
+    defines: a 70% chance of rain means it rained on about 70% of days with similar conditions
