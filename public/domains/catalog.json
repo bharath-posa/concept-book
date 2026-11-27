@@ -10259,5 +10259,24 @@
         "model": "sonnet"
       }
     ]
+  },
+  {
+    "id": "mml_book",
+    "name": "Mathematics for Machine Learning (book)",
+    "description": "The book by Deisenroth, Faisal and Ong, section by section: linear algebra, geometry, matrix decompositions, vector calculus, probability and optimization, then regression, PCA, mixture models and SVMs.",
+    "capstone": "kernels",
+    "nodes": 65,
+    "edges": 111,
+    "primitives": 4,
+    "concepts": 53,
+    "applications": 8,
+    "tags": [
+      "math",
+      "machine-learning",
+      "book"
+    ],
+    "has_navigator": true,
+    "has_book": false,
+    "default_level": "core"
   }
 ]
