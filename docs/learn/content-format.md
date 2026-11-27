@@ -1,6 +1,6 @@
 # Learn lessons — format
 
-Lessons for [ConceptBook Learn](https://github.com/bharath-posa/concept-learn), the phone app that uses this repo's
+Lessons for [LearnBot](https://github.com/bharath-posa/learnbot), the phone app that uses this repo's
 concept graphs. The app's Docker build fetches a pinned commit of this repo and runs the checker below.
 
 One folder per domain, level and language: `learn/content/<domain>/<level>.<lang>/`.
