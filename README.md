@@ -10,6 +10,20 @@ Pick a domain, click any concept node, see the exact learning path, and generate
 
 ---
 
+## ConceptBook Learn (bite-sized learning app)
+
+A phone-first app at `/concept-book/learn/` that teaches a domain one concept at a time, in the order the
+concept graph allows: 3–5 minute lessons (hook → idea with a diagram → worked example → your turn → build-it →
+check), a skill-tree map that unlocks as you go, and spaced reviews. Add it to your Home Screen; it works
+offline, and progress stays on the device. Version 1 teaches Geometry (core level).
+
+- Plan and learning-science rationale: [`docs/learn/plan.md`](docs/learn/plan.md)
+- Lesson format: [`docs/learn/content-format.md`](docs/learn/content-format.md); lessons in `learn/content/`
+- Check lessons and rebuild the app's data: `python scripts/learn/build_lessons.py`
+- Run locally: `npm run dev`, then open `http://localhost:5173/concept-book/learn/`
+
+---
+
 ## Selected Concept-Books
 
 | Title |  Category | Level | Repo | Citation | Traffic |

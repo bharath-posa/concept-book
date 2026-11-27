@@ -28,8 +28,19 @@ const localEnv = readDotEnv()
 const API_PORT = localEnv.API_PORT || process.env.API_PORT || '8200'
 const DEV_PORT = parseInt(localEnv.DEV_PORT || process.env.DEV_PORT || '5173', 10)
 
+const here = path.dirname(fileURLToPath(import.meta.url))
+
 export default defineConfig({
   base: `/${repoName}/`,
+  build: {
+    rollupOptions: {
+      // Two apps: the ConceptBook site (index.html) and the Learn app (learn/index.html → /<repo>/learn/).
+      input: {
+        main: path.join(here, 'index.html'),
+        learn: path.join(here, 'learn/index.html'),
+      },
+    },
+  },
   server: {
     port: DEV_PORT,
     proxy: {

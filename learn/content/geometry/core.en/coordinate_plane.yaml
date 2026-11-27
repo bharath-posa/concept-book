@@ -1,4 +1,5 @@
 title: The coordinate plane
+summary: "A grid where every point is a pair of numbers (x, y)."
 minutes: 3
 cards:
   - type: hook

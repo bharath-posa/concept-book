@@ -1,4 +1,5 @@
 title: Line segment
+summary: "The straight piece of a line between two endpoints; its length is the distance between them."
 minutes: 3
 cards:
   - type: hook

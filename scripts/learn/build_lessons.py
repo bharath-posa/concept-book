@@ -128,8 +128,12 @@ def build_folder(folder: Path, errors: list[str]) -> dict | None:
     for f in sorted(folder.glob("*.yaml")):
         if f.name == "_domain.yaml":
             continue
-        data = yaml.safe_load(f.read_text()) or {}
         where = f"{folder.relative_to(ROOT)}/{f.name}"
+        try:
+            data = yaml.safe_load(f.read_text()) or {}
+        except yaml.YAMLError as e:
+            errors.append(f"{where}: not valid YAML ({str(e).splitlines()[0]} at {getattr(e, 'problem_mark', '')})")
+            continue
         if f.stem == "_start":
             starter = data
             missing = set(primitives) - set(data.get("teaches") or [])
@@ -143,6 +147,8 @@ def build_folder(folder: Path, errors: list[str]) -> dict | None:
         cards = data.get("cards") or []
         if not data.get("title"):
             errors.append(f"{where}: needs a title")
+        if f.stem != "_start" and not data.get("summary"):
+            errors.append(f"{where}: needs a one-sentence summary (shown on the map)")
         if not any(c.get("type") in GRADED for c in cards):
             errors.append(f"{where}: needs at least one question")
         for i, card in enumerate(cards, 1):
@@ -159,10 +165,12 @@ def build_folder(folder: Path, errors: list[str]) -> dict | None:
     nodes = []
     for pid, p in primitives.items():
         nodes.append({"id": pid, "label": label_of(pid), "kind": "primitive", "tier": p.get("tier", 0),
-                      "defines": p.get("defines", ""), "parents": []})
+                      "defines": p.get("defines", ""), "summary": ((starter or {}).get("summaries") or {}).get(pid, ""),
+                      "parents": []})
     for cid, c in concepts.items():
         nodes.append({"id": cid, "label": (lessons.get(cid) or {}).get("title") or label_of(cid), "kind": "concept",
-                      "tier": c.get("tier", 1), "defines": c.get("defines", ""), "parents": c.get("composed_of") or []})
+                      "tier": c.get("tier", 1), "defines": c.get("defines", ""),
+                      "summary": (lessons.get(cid) or {}).get("summary", ""), "parents": c.get("composed_of") or []})
     known = {n["id"] for n in nodes}
     for n in nodes:
         for p in n["parents"]:

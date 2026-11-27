@@ -5,7 +5,7 @@ One folder per domain, level and language: `learn/content/<domain>/<level>.<lang
 - `_domain.yaml` — `domain`, `graph` (path to the domain's `graph.yaml`), `level`, `language`, `title`,
   `tagline`, and short `applications` labels.
 - `_start.yaml` — the starter lesson; `teaches:` lists every primitive in the graph.
-- `<concept_id>.yaml` — one lesson per concept in the graph: `title`, `minutes`, `cards`, `review`.
+- `<concept_id>.yaml` — one lesson per concept in the graph: `title`, `summary` (one plain sentence shown on the map), `minutes`, `cards`, `review`. The starter also has `summaries` for each primitive.
 
 ## Cards
 | type | fields | learner does |

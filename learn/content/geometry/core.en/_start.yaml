@@ -3,6 +3,12 @@ id: _start
 title: The building blocks
 minutes: 3
 teaches: [point, line, plane, distance, angle]
+summaries:
+  point: An exact location with no size.
+  line: Perfectly straight, endless both ways, with no width.
+  plane: A perfectly flat surface that goes on forever.
+  distance: How far apart two points are — never negative, the same both ways.
+  angle: The amount of turn between two paths that start at the same point.
 cards:
   - type: hook
     text: Every shape you've ever drawn — a house, a star, a pizza slice — is made from just **five ideas**. Can you guess one of them?
