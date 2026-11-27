@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Concept Graph — graph</title>
+<script src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f0f2f5;overflow:hidden;height:100vh}
+.app{
+  display:grid;
+  grid-template-columns:230px 1fr 210px;
+  grid-template-rows:60vh 40vh;
+  height:100vh;
+  gap:0;
+}
+/* ── Left sidebar: learning path ── */
+#path-sidebar{
+  grid-column:1;grid-row:1/3;
+  background:#f5f6f8;color:#2a2a2a;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  border-right:1px solid #dde0e6;
+}
+#path-header{
+  padding:14px 14px 10px;
+  border-bottom:1px solid #dde0e6;
+  flex-shrink:0;
+}
+#path-header h1{font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:#888;margin-bottom:2px;font-weight:700}
+#path-header .domain-name{font-size:11px;color:#555;margin-top:4px}
+#path-steps{flex:1;overflow-y:auto;padding:8px 0}
+#path-steps .hint{color:#aaa;font-size:12px;text-align:center;padding:24px 12px;line-height:1.5}
+.step-item{
+  display:flex;align-items:flex-start;gap:8px;
+  padding:7px 12px;cursor:pointer;
+  border-left:3px solid transparent;
+  transition:background .15s;
+}
+.step-item:hover{background:#ebebf0}
+.step-item.active{background:#e8eef8;border-left-color:#4a90d9}
+.step-item.target{background:#eaf5ea;border-left-color:#4caf50}
+.step-num{min-width:20px;font-size:10px;font-weight:700;color:#bbb;padding-top:2px;flex-shrink:0}
+.step-item.target .step-num{color:#4caf50}
+.step-label{font-size:12px;font-weight:600;color:#333;line-height:1.4}
+.step-def{font-size:10px;color:#888;margin-top:2px;line-height:1.4}
+.step-kind{display:inline-block;padding:0 5px;border-radius:8px;font-size:9px;font-weight:700;margin-left:4px}
+#path-count{font-size:10px;color:#aaa;margin-top:3px}
+/* ── Graph panel ── */
+#graph-panel{
+  grid-column:2;grid-row:1;
+  position:relative;background:#fff;
+  border-bottom:2px solid #dde;
+}
+#graph-container{width:100%;height:100%}
+.graph-recenter-btn{
+  position:absolute;right:16px;bottom:16px;z-index:50;
+  padding:6px 14px;border-radius:6px;
+  border:1px solid #1e3a5f;background:#1e3a5f;color:#fff;
+  font-size:12px;font-weight:600;font-family:system-ui,sans-serif;
+  box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer;
+}
+.graph-recenter-btn:hover{background:#28496f;border-color:#28496f}
+/* ── Explanation panel ── */
+#explain-panel{
+  grid-column:2;grid-row:2;
+  background:#fff;overflow-y:auto;
+  padding:16px 20px;
+}
+#explain-panel .empty{color:#aaa;font-size:13px;padding:20px 0;text-align:center}
+#explain-panel .node-title{
+  display:flex;align-items:center;gap:8px;margin-bottom:10px;
+}
+#explain-panel .node-title h2{font-size:16px;color:#1e3a5f}
+.badge{
+  display:inline-block;padding:2px 8px;border-radius:10px;
+  font-size:11px;font-weight:700;
+}
+.badge.primitive{background:#e8f5e9;color:#2e7d32}
+.badge.concept{background:#e3f2fd;color:#1565c0}
+.badge.application{background:#fff3e0;color:#ef6c00}
+.tier-tag{font-size:11px;color:#999;margin-left:auto}
+#explain-panel .defines{
+  font-size:14px;color:#333;line-height:1.6;margin-bottom:12px;
+  padding:10px 12px;background:#f8f9fb;border-radius:6px;
+  border-left:3px solid #90b4e8;
+}
+#explain-panel .section-label{
+  font-size:10px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.08em;color:#999;margin-bottom:6px;
+}
+#explain-panel .prereq-list{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.prereq-chip{
+  padding:3px 9px;border-radius:12px;font-size:11px;
+  background:#e3f2fd;color:#1565c0;cursor:pointer;
+  border:1px solid #90caf9;transition:background .12s;
+}
+.prereq-chip:hover{background:#bbdefb}
+#explain-panel .meta-row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:10px}
+.meta-item{font-size:12px;color:#555}
+.meta-item b{color:#1e3a5f}
+#explain-panel .play-hint{
+  font-size:12px;color:#5a5a5a;line-height:1.6;
+  padding:8px 12px;background:#fffde7;border-radius:6px;
+  border-left:3px solid #ffd54f;margin-bottom:8px;
+}
+/* ── Notes sidebar ── */
+#notes-sidebar{
+  grid-column:3;grid-row:1/3;
+  background:#fafaf8;
+  border-left:2px solid #e8e8e0;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+#notes-header{
+  padding:10px 12px 8px;
+  border-bottom:1px solid #e0e0d8;
+  flex-shrink:0;
+}
+#notes-header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
+#notes-header h2{font-size:12px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.06em;margin:0}
+#notes-node-label{font-size:11px;color:#999;margin-top:2px}
+.nb-btn{font-size:10px;padding:2px 7px;border-radius:3px;
+  border:1px solid #ddd;background:#f0f0ea;cursor:pointer;color:#777;
+  font-family:system-ui,sans-serif}
+.nb-btn:hover{background:#e0e0d8;color:#444}
+#notes-textarea{
+  flex:0 0 auto;height:100px;border:none;resize:none;
+  padding:12px;font-size:12px;line-height:1.6;
+  font-family:inherit;background:#fafaf8;color:#333;
+  outline:none;
+}
+#notes-with-entries{
+  border-top:1px solid #e8e8e0;flex:1;min-height:0;overflow-y:auto;
+}
+.note-entry{
+  padding:6px 12px;cursor:pointer;
+  border-bottom:1px solid #f0f0e8;
+  font-size:11px;
+}
+.note-entry:hover{background:#f0efe8}
+.note-entry .note-node{font-weight:600;color:#555;display:flex;justify-content:space-between;align-items:center}
+.note-entry .note-ts{font-weight:400;color:#bbb;font-size:10px}
+.note-entry .note-preview{color:#999;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* ── kind badge colours in sidebar ── */
+.primitive-k{background:#e8f5e9;color:#2e7d32}
+.concept-k{background:#e3f2fd;color:#1565c0}
+.application-k{background:#fff3e0;color:#ef6c00}
+/* ── concept detail panel ── */
+#concept-detail{margin-top:14px;border-top:1px solid #e8e8e0;padding-top:10px;}
+#concept-iframe{width:100%;height:500px;border:1px solid #e0e0d8;border-radius:4px;margin-top:6px;display:block;}
+.concept-not-found{color:#e57373;font-size:12px;padding:6px 0;font-style:italic;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- LEFT: learning path sidebar -->
+<aside id="path-sidebar">
+  <div id="path-header">
+    <h1>Learning Path</h1>
+    <div class="domain-name">graph</div>
+    <div id="path-count"></div>
+  </div>
+  <div id="path-steps">
+    <div class="hint">Click any node in the graph<br>to see its learning path</div>
+  </div>
+</aside>
+
+<!-- CENTRE TOP: concept graph -->
+<div id="graph-panel">
+  <div id="graph-container"></div>
+  <button class="graph-recenter-btn" onclick="reCenterGraph()" title="Re-fit the graph to the viewport">Re-Center</button>
+</div>
+
+<!-- CENTRE BOTTOM: explanation panel -->
+<div id="explain-panel">
+  <div class="empty">Select a node to see its definition, prerequisites, and learning context.</div>
+</div>
+
+<!-- RIGHT: notes sidebar -->
+<aside id="notes-sidebar">
+  <div id="notes-header">
+    <div id="notes-header-top">
+      <h2>Notes</h2>
+      <div>
+        <button class="nb-btn" id="nb-clear-btn" onclick="clearNote()">Clear</button>
+        <button class="nb-btn" onclick="exportNotes()">Export</button>
+      </div>
+    </div>
+    <div id="notes-node-label">no node selected</div>
+  </div>
+  <textarea id="notes-textarea" placeholder="Type notes here&#10;(auto-saved per node)"></textarea>
+  <div id="notes-with-entries"></div>
+</aside>
+
+</div><!-- .app -->
+
+<script>
+const RAW = {"nodes": [{"id": "vector", "label": "vector", "kind": "primitive", "tier": 0, "defines": "a list of numbers, e.g. one data point's features; vectors can be added and scaled", "prereqs": [], "verifier": "", "lab": "", "play": "", "color": {"background": "#fffde7", "border": "#795548"}, "font": {"size": 13}}, {"id": "matrix", "label": "matrix", "kind": "primitive", "tier": 0, "defines": "a rectangular grid of numbers; a table of data, or a machine that transforms vectors", "prereqs": [], "verifier": "", "lab": "", "play": "", "color": {"background": "#fffde7", "border": "#795548"}, "font": {"size": 13}}, {"id": "derivative", "label": "derivative", "kind": "primitive", "tier": 0, "defines": "the rate of change of a function; the slope of its graph at a point", "prereqs": [], "verifier": "", "lab": "", "play": "", "color": {"background": "#fffde7", "border": "#795548"}, "font": {"size": 13}}, {"id": "probability", "label": "probability", "kind": "primitive", "tier": 0, "defines": "a number from 0 to 1 for how likely something is; all possibilities add to 1", "prereqs": [], "verifier": "", "lab": "", "play": "", "color": {"background": "#fffde7", "border": "#795548"}, "font": {"size": 13}}, {"id": "systems_of_linear_equations", "label": "systems of linear equations", "kind": "concept", "tier": 1, "defines": "several linear equations solved together, written compactly as Ax = b", "prereqs": ["vector", "matrix"], "verifier": "sympy", "lab": "", "play": "find prices from two shopping receipts", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "matrix_operations", "label": "matrix operations", "kind": "concept", "tier": 1, "defines": "matrix addition, multiplication (rows times columns), identity, transpose and inverse", "prereqs": ["matrix"], "verifier": "sympy", "lab": "", "play": "multiply a 2×2 by a 2×1 by hand", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "gaussian_elimination", "label": "gaussian elimination", "kind": "concept", "tier": 2, "defines": "solve Ax = b with row operations down to row-echelon form; also finds inverses", "prereqs": ["systems_of_linear_equations", "matrix_operations"], "verifier": "sympy", "lab": "", "play": "reduce a 3×3 system row by row", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "vector_spaces", "label": "vector spaces", "kind": "concept", "tier": 1, "defines": "a set of vectors closed under adding and scaling; subspaces are vector spaces inside it", "prereqs": ["vector"], "verifier": "sympy", "lab": "", "play": "check whether a line through the origin is closed", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "linear_independence", "label": "linear independence", "kind": "concept", "tier": 2, "defines": "no vector in the set is a combination of the others; only the trivial combination gives 0", "prereqs": ["vector_spaces"], "verifier": "sympy", "lab": "", "play": "try to build one arrow from two others", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "basis_and_rank", "label": "basis and rank", "kind": "concept", "tier": 3, "defines": "a basis is a minimal spanning set; rank is the number of independent columns", "prereqs": ["linear_independence", "gaussian_elimination"], "verifier": "sympy", "lab": "", "play": "count pivots after elimination", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "linear_mappings", "label": "linear mappings", "kind": "concept", "tier": 4, "defines": "a function that keeps sums and scalings; in a basis it is a matrix; kernel and image", "prereqs": ["matrix_operations", "basis_and_rank"], "verifier": "sympy", "lab": "", "play": "see what a matrix does to a grid", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "affine_spaces", "label": "affine spaces", "kind": "concept", "tier": 2, "defines": "a subspace shifted away from the origin, like the solution set of Ax = b", "prereqs": ["vector_spaces", "systems_of_linear_equations"], "verifier": "sympy", "lab": "", "play": "slide a line off the origin", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "norms", "label": "norms", "kind": "concept", "tier": 2, "defines": "a vector's length: Manhattan (ℓ1) or Euclidean (ℓ2)", "prereqs": ["vector_spaces"], "verifier": "sympy", "lab": "", "play": "compare taxi and crow distances on a grid", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "inner_products", "label": "inner products", "kind": "concept", "tier": 2, "defines": "a symmetric, positive definite way to multiply two vectors; the dot product is one; ⟨x,y⟩ = xᵀAy", "prereqs": ["vector_spaces", "matrix_operations"], "verifier": "sympy", "lab": "", "play": "compute a dot product from coordinates", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "lengths_and_distances", "label": "lengths and distances", "kind": "concept", "tier": 3, "defines": "an inner product gives length ‖x‖ = √⟨x,x⟩ and distance d(x,y) = ‖x − y‖", "prereqs": ["norms", "inner_products"], "verifier": "sympy", "lab": "", "play": "measure how similar two data points are", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "angles_and_orthogonality", "label": "angles and orthogonality", "kind": "concept", "tier": 4, "defines": "cos ω = ⟨x,y⟩ / (‖x‖‖y‖); orthogonal means ⟨x,y⟩ = 0", "prereqs": ["inner_products", "lengths_and_distances"], "verifier": "sympy", "lab": "", "play": "rotate one arrow until the dot product is zero", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "orthonormal_basis", "label": "orthonormal basis", "kind": "concept", "tier": 5, "defines": "basis vectors of length 1 that are mutually orthogonal; Gram–Schmidt builds one", "prereqs": ["angles_and_orthogonality", "basis_and_rank"], "verifier": "sympy", "lab": "", "play": "straighten two skewed arrows into a square corner", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "orthogonal_projections", "label": "orthogonal projections", "kind": "concept", "tier": 6, "defines": "the closest point in a subspace: π(x) = B(BᵀB)⁻¹Bᵀx", "prereqs": ["orthonormal_basis", "linear_mappings"], "verifier": "sympy", "lab": "", "play": "drop a shadow of a vector onto a line", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "rotations", "label": "rotations", "kind": "concept", "tier": 6, "defines": "linear maps that turn space without stretching; orthogonal matrices with determinant 1", "prereqs": ["orthonormal_basis", "linear_mappings"], "verifier": "sympy", "lab": "", "play": "rotate a shape by an angle θ", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "determinant_and_trace", "label": "determinant and trace", "kind": "concept", "tier": 3, "defines": "det A = how much A scales area or volume (0 means not invertible); trace = sum of the diagonal", "prereqs": ["matrix_operations", "gaussian_elimination"], "verifier": "sympy", "lab": "", "play": "stretch a unit square and read its area", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "eigenvalues_and_eigenvectors", "label": "eigenvalues and eigenvectors", "kind": "concept", "tier": 5, "defines": "Ax = λx: directions A only stretches; λ solves det(A − λI) = 0", "prereqs": ["determinant_and_trace", "linear_mappings"], "verifier": "sympy", "lab": "", "play": "find the arrows a matrix doesn't turn", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "cholesky_decomposition", "label": "cholesky decomposition", "kind": "concept", "tier": 3, "defines": "a symmetric positive definite A factors as LLᵀ with L lower-triangular — a matrix square root", "prereqs": ["inner_products", "matrix_operations"], "verifier": "sympy", "lab": "", "play": "factor a 2×2 covariance matrix", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "eigendecomposition", "label": "eigendecomposition", "kind": "concept", "tier": 6, "defines": "A = PDP⁻¹ with D diagonal; symmetric matrices get an orthonormal P (spectral theorem)", "prereqs": ["eigenvalues_and_eigenvectors", "orthonormal_basis"], "verifier": "sympy", "lab": "", "play": "compute A¹⁰ the easy way", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "singular_value_decomposition", "label": "singular value decomposition", "kind": "concept", "tier": 7, "defines": "any matrix A = UΣVᵀ: rotate, stretch along axes, rotate", "prereqs": ["eigendecomposition"], "verifier": "sympy", "lab": "", "play": "watch a circle become an ellipse", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "matrix_approximation", "label": "matrix approximation", "kind": "concept", "tier": 8, "defines": "keep the top k singular values for the best rank-k approximation (Eckart–Young)", "prereqs": ["singular_value_decomposition", "norms"], "verifier": "sympy", "lab": "", "play": "compress an image with fewer and fewer ranks", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "partial_derivatives_and_gradients", "label": "partial derivatives and gradients", "kind": "concept", "tier": 1, "defines": "∂f/∂xᵢ holds the other inputs fixed; the gradient collects them and points uphill; chain rule", "prereqs": ["derivative", "vector"], "verifier": "sympy", "lab": "", "play": "walk uphill on a contour map", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "jacobian", "label": "jacobian", "kind": "concept", "tier": 2, "defines": "the matrix of all partial derivatives of a vector-valued function; |det J| scales areas", "prereqs": ["partial_derivatives_and_gradients", "matrix"], "verifier": "sympy", "lab": "", "play": "zoom in until a curved map looks linear", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "backpropagation", "label": "backpropagation", "kind": "concept", "tier": 3, "defines": "the chain rule applied backwards through a computation graph — automatic differentiation", "prereqs": ["jacobian"], "verifier": "sympy", "lab": "", "play": "push a gradient back through a tiny network", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "hessian_and_taylor_series", "label": "hessian and taylor series", "kind": "concept", "tier": 2, "defines": "second derivatives form the Hessian; Taylor series approximate f near a point with polynomials", "prereqs": ["partial_derivatives_and_gradients", "matrix"], "verifier": "sympy", "lab": "", "play": "fit a parabola to a curve at a point", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "probability_space", "label": "probability space", "kind": "concept", "tier": 1, "defines": "sample space, events and a probability measure; a random variable maps outcomes to numbers", "prereqs": ["probability"], "verifier": "sympy", "lab": "", "play": "list the outcomes of two dice", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "probability_density", "label": "probability density", "kind": "concept", "tier": 2, "defines": "discrete variables have a mass function; continuous ones a density p(x) whose area is probability", "prereqs": ["probability_space"], "verifier": "sympy", "lab": "", "play": "shade the area under a curve", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "sum_product_bayes", "label": "sum product bayes", "kind": "concept", "tier": 3, "defines": "sum rule p(x) = Σ p(x,y), product rule p(x,y) = p(y|x)p(x), and Bayes' theorem p(θ|x) ∝ p(x|θ)p(θ)", "prereqs": ["probability_density"], "verifier": "sympy", "lab": "", "play": "update a belief after a test result", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "mean_and_covariance", "label": "mean and covariance", "kind": "concept", "tier": 3, "defines": "mean = expected value; covariance matrix = how variables vary together; independence", "prereqs": ["probability_density", "matrix"], "verifier": "sympy", "lab": "", "play": "spot positive and negative correlation in a scatter plot", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "gaussian_distribution", "label": "gaussian distribution", "kind": "concept", "tier": 4, "defines": "the bell curve N(μ, Σ); its marginals, conditionals and sums are Gaussian too", "prereqs": ["mean_and_covariance"], "verifier": "sympy", "lab": "", "play": "move μ and stretch Σ of a 2-D bell", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "conjugate_priors", "label": "conjugate priors", "kind": "concept", "tier": 5, "defines": "a prior whose posterior has the same form, e.g. Beta–Binomial; the exponential family", "prereqs": ["sum_product_bayes", "gaussian_distribution"], "verifier": "sympy", "lab": "", "play": "update a coin's Beta prior after flips", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "change_of_variables", "label": "change of variables", "kind": "concept", "tier": 3, "defines": "the density of y = g(x): p(y) = p(x)·|dx/dy|", "prereqs": ["probability_density", "jacobian"], "verifier": "sympy", "lab": "", "play": "square a uniform variable and see its density", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "gradient_descent", "label": "gradient descent", "kind": "concept", "tier": 2, "defines": "repeat x ← x − γ∇f(x); step size and momentum", "prereqs": ["partial_derivatives_and_gradients"], "verifier": "sympy", "lab": "", "play": "roll a ball downhill with different step sizes", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "stochastic_gradient_descent", "label": "stochastic gradient descent", "kind": "concept", "tier": 4, "defines": "use the gradient of a small random batch — noisy but unbiased and cheap", "prereqs": ["gradient_descent", "mean_and_covariance"], "verifier": "sympy", "lab": "", "play": "train on mini-batches and watch the wobble", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "lagrange_multipliers", "label": "lagrange multipliers", "kind": "concept", "tier": 2, "defines": "at a constrained optimum the gradients of f and the constraint line up: ∇f = λ∇g", "prereqs": ["partial_derivatives_and_gradients"], "verifier": "sympy", "lab": "", "play": "find the best point on a circle", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "convex_optimization", "label": "convex optimization", "kind": "concept", "tier": 3, "defines": "convex functions have no false valleys: any local minimum is global; LPs, QPs, duality", "prereqs": ["lagrange_multipliers", "hessian_and_taylor_series"], "verifier": "sympy", "lab": "", "play": "test chords lying above a curve", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "empirical_risk_minimization", "label": "empirical risk minimization", "kind": "concept", "tier": 4, "defines": "choose parameters that minimize the average loss on the training data", "prereqs": ["lengths_and_distances", "gradient_descent"], "verifier": "sympy", "lab": "", "play": "fit a line by minimizing squared errors", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "regularization", "label": "regularization", "kind": "concept", "tier": 5, "defines": "add a penalty like λ‖θ‖² to discourage overly complex fits; test on held-out data", "prereqs": ["empirical_risk_minimization", "norms"], "verifier": "sympy", "lab": "", "play": "add wiggle to a fit and watch test error rise", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "maximum_likelihood", "label": "maximum likelihood", "kind": "concept", "tier": 4, "defines": "choose parameters that make the observed data most probable; minimize negative log-likelihood", "prereqs": ["sum_product_bayes", "gradient_descent"], "verifier": "sympy", "lab": "", "play": "slide a bell curve to best fit some points", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "map_estimation", "label": "map estimation", "kind": "concept", "tier": 6, "defines": "maximize posterior = likelihood × prior; a Gaussian prior acts like L2 regularization", "prereqs": ["maximum_likelihood", "conjugate_priors"], "verifier": "sympy", "lab": "", "play": "pull an estimate toward a prior guess", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "graphical_models", "label": "graphical models", "kind": "concept", "tier": 4, "defines": "a directed graph that shows how a joint distribution factorizes; conditional independence", "prereqs": ["sum_product_bayes"], "verifier": "sympy", "lab": "", "play": "draw arrows for rain, sprinkler and wet grass", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "model_selection", "label": "model selection", "kind": "concept", "tier": 6, "defines": "pick model complexity with cross-validation or Bayesian evidence; Occam's razor", "prereqs": ["regularization", "maximum_likelihood"], "verifier": "sympy", "lab": "", "play": "compare polynomial degrees on held-out folds", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "least_squares_regression", "label": "least squares regression", "kind": "concept", "tier": 7, "defines": "with Gaussian noise, MLE gives θ = (XᵀX)⁻¹Xᵀy — an orthogonal projection of y onto X's columns", "prereqs": ["maximum_likelihood", "orthogonal_projections", "gaussian_distribution"], "verifier": "sympy", "lab": "", "play": "fit house prices to size", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "regularized_regression", "label": "regularized regression", "kind": "concept", "tier": 8, "defines": "MAP with a Gaussian prior gives ridge regression: θ = (XᵀX + λI)⁻¹Xᵀy", "prereqs": ["least_squares_regression", "map_estimation", "regularization"], "verifier": "sympy", "lab": "", "play": "turn λ up and watch wild coefficients shrink", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "bayesian_linear_regression", "label": "bayesian linear regression", "kind": "concept", "tier": 9, "defines": "keep the full posterior over θ and average predictions over it, giving error bars", "prereqs": ["regularized_regression", "conjugate_priors"], "verifier": "sympy", "lab": "", "play": "see uncertainty grow away from the data", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "principal_component_analysis", "label": "principal component analysis", "kind": "concept", "tier": 7, "defines": "project data onto the directions of greatest variance: the top eigenvectors of the covariance matrix", "prereqs": ["mean_and_covariance", "eigendecomposition", "lagrange_multipliers"], "verifier": "sympy", "lab": "", "play": "find the long axis of a cloud of points", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "pca_in_practice", "label": "pca in practice", "kind": "concept", "tier": 8, "defines": "center (and standardize), take the SVD, keep k components, project; reconstruction error", "prereqs": ["principal_component_analysis", "singular_value_decomposition", "orthogonal_projections"], "verifier": "sympy", "lab": "", "play": "squash 2-D points onto one line and rebuild them", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "gaussian_mixture_model", "label": "gaussian mixture model", "kind": "concept", "tier": 5, "defines": "p(x) = Σ πₖ N(x | μₖ, Σₖ): a weighted blend of bells for clumpy data", "prereqs": ["gaussian_distribution", "sum_product_bayes"], "verifier": "sympy", "lab": "", "play": "mix two bells and adjust their weights", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "expectation_maximization", "label": "expectation maximization", "kind": "concept", "tier": 6, "defines": "alternate: E-step computes responsibilities, M-step refits means, covariances and weights", "prereqs": ["gaussian_mixture_model", "maximum_likelihood"], "verifier": "sympy", "lab": "", "play": "let two clusters claim points round by round", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "separating_hyperplanes", "label": "separating hyperplanes", "kind": "concept", "tier": 3, "defines": "the set ⟨w, x⟩ + b = 0 splits space in two; the sign tells the class", "prereqs": ["inner_products", "affine_spaces"], "verifier": "sympy", "lab": "", "play": "draw a line between red and blue points", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "primal_svm", "label": "primal svm", "kind": "concept", "tier": 6, "defines": "maximize the margin 1/‖w‖; soft margin allows mistakes with hinge loss and a C penalty", "prereqs": ["separating_hyperplanes", "lengths_and_distances", "regularization"], "verifier": "sympy", "lab": "", "play": "widen the street between two classes", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "dual_svm", "label": "dual svm", "kind": "concept", "tier": 7, "defines": "solve for Lagrange multipliers instead; only support vectors get αᵢ > 0", "prereqs": ["primal_svm", "lagrange_multipliers", "convex_optimization"], "verifier": "sympy", "lab": "", "play": "find which points hold the street up", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "kernels", "label": "kernels", "kind": "concept", "tier": 8, "defines": "replace ⟨xᵢ, xⱼ⟩ with k(xᵢ, xⱼ) to separate data in a richer feature space without computing it", "prereqs": ["dual_svm", "inner_products"], "verifier": "sympy", "lab": "", "play": "lift a ring of points into 3-D and split it flat", "color": {"background": "#e8f5e9", "border": "#2e7d32"}, "font": {"size": 13}}, {"id": "recommender_systems", "label": "recommender systems", "kind": "application", "tier": 0, "defines": "filling in a sparse users × films table with a low-rank approximation", "prereqs": ["matrix_approximation"], "verifier": "", "lab": "", "play": "", "color": {"background": "#fce4ec", "border": "#c62828"}, "font": {"size": 13}}, {"id": "image_compression", "label": "image compression", "kind": "application", "tier": 0, "defines": "storing a picture with a few singular vectors or principal components", "prereqs": ["matrix_approximation", "pca_in_practice"], "verifier": "", "lab": "", "play": "", "color": {"background": "#fce4ec", "border": "#c62828"}, "font": {"size": 13}}, {"id": "training_neural_networks", "label": "training neural networks", "kind": "application", "tier": 0, "defines": "gradients by backpropagation, steps by stochastic gradient descent", "prereqs": ["backpropagation", "stochastic_gradient_descent"], "verifier": "", "lab": "", "play": "", "color": {"background": "#fce4ec", "border": "#c62828"}, "font": {"size": 13}}, {"id": "price_prediction", "label": "price prediction", "kind": "application", "tier": 0, "defines": "predicting a price with honest error bars", "prereqs": ["bayesian_linear_regression"], "verifier": "", "lab": "", "play": "", "color": {"background": "#fce4ec", "border": "#c62828"}, "font": {"size": 13}}, {"id": "customer_segmentation", "label": "customer segmentation", "kind": "application", "tier": 0, "defines": "finding natural groups of customers with a mixture model", "prereqs": ["expectation_maximization"], "verifier": "", "lab": "", "play": "", "color": {"background": "#fce4ec", "border": "#c62828"}, "font": {"size": 13}}, {"id": "spam_filtering", "label": "spam filtering", "kind": "application", "tier": 0, "defines": "a kernel SVM separating spam from real mail", "prereqs": ["kernels"], "verifier": "", "lab": "", "play": "", "color": {"background": "#fce4ec", "border": "#c62828"}, "font": {"size": 13}}, {"id": "robot_arms", "label": "robot arms", "kind": "application", "tier": 0, "defines": "turning joint angles into hand positions and velocities", "prereqs": ["rotations", "jacobian"], "verifier": "", "lab": "", "play": "", "color": {"background": "#fce4ec", "border": "#c62828"}, "font": {"size": 13}}, {"id": "medical_diagnosis", "label": "medical diagnosis", "kind": "application", "tier": 0, "defines": "reasoning from symptoms to causes with a probabilistic model", "prereqs": ["graphical_models", "map_estimation"], "verifier": "", "lab": "", "play": "", "color": {"background": "#fce4ec", "border": "#c62828"}, "font": {"size": 13}}], "edges": [{"from": "vector", "to": "systems_of_linear_equations"}, {"from": "matrix", "to": "systems_of_linear_equations"}, {"from": "matrix", "to": "matrix_operations"}, {"from": "systems_of_linear_equations", "to": "gaussian_elimination"}, {"from": "matrix_operations", "to": "gaussian_elimination"}, {"from": "vector", "to": "vector_spaces"}, {"from": "vector_spaces", "to": "linear_independence"}, {"from": "linear_independence", "to": "basis_and_rank"}, {"from": "gaussian_elimination", "to": "basis_and_rank"}, {"from": "matrix_operations", "to": "linear_mappings"}, {"from": "basis_and_rank", "to": "linear_mappings"}, {"from": "vector_spaces", "to": "affine_spaces"}, {"from": "systems_of_linear_equations", "to": "affine_spaces"}, {"from": "vector_spaces", "to": "norms"}, {"from": "vector_spaces", "to": "inner_products"}, {"from": "matrix_operations", "to": "inner_products"}, {"from": "norms", "to": "lengths_and_distances"}, {"from": "inner_products", "to": "lengths_and_distances"}, {"from": "inner_products", "to": "angles_and_orthogonality"}, {"from": "lengths_and_distances", "to": "angles_and_orthogonality"}, {"from": "angles_and_orthogonality", "to": "orthonormal_basis"}, {"from": "basis_and_rank", "to": "orthonormal_basis"}, {"from": "orthonormal_basis", "to": "orthogonal_projections"}, {"from": "linear_mappings", "to": "orthogonal_projections"}, {"from": "orthonormal_basis", "to": "rotations"}, {"from": "linear_mappings", "to": "rotations"}, {"from": "matrix_operations", "to": "determinant_and_trace"}, {"from": "gaussian_elimination", "to": "determinant_and_trace"}, {"from": "determinant_and_trace", "to": "eigenvalues_and_eigenvectors"}, {"from": "linear_mappings", "to": "eigenvalues_and_eigenvectors"}, {"from": "inner_products", "to": "cholesky_decomposition"}, {"from": "matrix_operations", "to": "cholesky_decomposition"}, {"from": "eigenvalues_and_eigenvectors", "to": "eigendecomposition"}, {"from": "orthonormal_basis", "to": "eigendecomposition"}, {"from": "eigendecomposition", "to": "singular_value_decomposition"}, {"from": "singular_value_decomposition", "to": "matrix_approximation"}, {"from": "norms", "to": "matrix_approximation"}, {"from": "derivative", "to": "partial_derivatives_and_gradients"}, {"from": "vector", "to": "partial_derivatives_and_gradients"}, {"from": "partial_derivatives_and_gradients", "to": "jacobian"}, {"from": "matrix", "to": "jacobian"}, {"from": "jacobian", "to": "backpropagation"}, {"from": "partial_derivatives_and_gradients", "to": "hessian_and_taylor_series"}, {"from": "matrix", "to": "hessian_and_taylor_series"}, {"from": "probability", "to": "probability_space"}, {"from": "probability_space", "to": "probability_density"}, {"from": "probability_density", "to": "sum_product_bayes"}, {"from": "probability_density", "to": "mean_and_covariance"}, {"from": "matrix", "to": "mean_and_covariance"}, {"from": "mean_and_covariance", "to": "gaussian_distribution"}, {"from": "sum_product_bayes", "to": "conjugate_priors"}, {"from": "gaussian_distribution", "to": "conjugate_priors"}, {"from": "probability_density", "to": "change_of_variables"}, {"from": "jacobian", "to": "change_of_variables"}, {"from": "partial_derivatives_and_gradients", "to": "gradient_descent"}, {"from": "gradient_descent", "to": "stochastic_gradient_descent"}, {"from": "mean_and_covariance", "to": "stochastic_gradient_descent"}, {"from": "partial_derivatives_and_gradients", "to": "lagrange_multipliers"}, {"from": "lagrange_multipliers", "to": "convex_optimization"}, {"from": "hessian_and_taylor_series", "to": "convex_optimization"}, {"from": "lengths_and_distances", "to": "empirical_risk_minimization"}, {"from": "gradient_descent", "to": "empirical_risk_minimization"}, {"from": "empirical_risk_minimization", "to": "regularization"}, {"from": "norms", "to": "regularization"}, {"from": "sum_product_bayes", "to": "maximum_likelihood"}, {"from": "gradient_descent", "to": "maximum_likelihood"}, {"from": "maximum_likelihood", "to": "map_estimation"}, {"from": "conjugate_priors", "to": "map_estimation"}, {"from": "sum_product_bayes", "to": "graphical_models"}, {"from": "regularization", "to": "model_selection"}, {"from": "maximum_likelihood", "to": "model_selection"}, {"from": "maximum_likelihood", "to": "least_squares_regression"}, {"from": "orthogonal_projections", "to": "least_squares_regression"}, {"from": "gaussian_distribution", "to": "least_squares_regression"}, {"from": "least_squares_regression", "to": "regularized_regression"}, {"from": "map_estimation", "to": "regularized_regression"}, {"from": "regularization", "to": "regularized_regression"}, {"from": "regularized_regression", "to": "bayesian_linear_regression"}, {"from": "conjugate_priors", "to": "bayesian_linear_regression"}, {"from": "mean_and_covariance", "to": "principal_component_analysis"}, {"from": "eigendecomposition", "to": "principal_component_analysis"}, {"from": "lagrange_multipliers", "to": "principal_component_analysis"}, {"from": "principal_component_analysis", "to": "pca_in_practice"}, {"from": "singular_value_decomposition", "to": "pca_in_practice"}, {"from": "orthogonal_projections", "to": "pca_in_practice"}, {"from": "gaussian_distribution", "to": "gaussian_mixture_model"}, {"from": "sum_product_bayes", "to": "gaussian_mixture_model"}, {"from": "gaussian_mixture_model", "to": "expectation_maximization"}, {"from": "maximum_likelihood", "to": "expectation_maximization"}, {"from": "inner_products", "to": "separating_hyperplanes"}, {"from": "affine_spaces", "to": "separating_hyperplanes"}, {"from": "separating_hyperplanes", "to": "primal_svm"}, {"from": "lengths_and_distances", "to": "primal_svm"}, {"from": "regularization", "to": "primal_svm"}, {"from": "primal_svm", "to": "dual_svm"}, {"from": "lagrange_multipliers", "to": "dual_svm"}, {"from": "convex_optimization", "to": "dual_svm"}, {"from": "dual_svm", "to": "kernels"}, {"from": "inner_products", "to": "kernels"}, {"from": "matrix_approximation", "to": "recommender_systems"}, {"from": "matrix_approximation", "to": "image_compression"}, {"from": "pca_in_practice", "to": "image_compression"}, {"from": "backpropagation", "to": "training_neural_networks"}, {"from": "stochastic_gradient_descent", "to": "training_neural_networks"}, {"from": "bayesian_linear_regression", "to": "price_prediction"}, {"from": "expectation_maximization", "to": "customer_segmentation"}, {"from": "kernels", "to": "spam_filtering"}, {"from": "rotations", "to": "robot_arms"}, {"from": "jacobian", "to": "robot_arms"}, {"from": "graphical_models", "to": "medical_diagnosis"}, {"from": "map_estimation", "to": "medical_diagnosis"}]};
+const DOMAIN_KEY = "graph";
+
+// ── index ──────────────────────────────────────────────────────────────────
+const nodeIndex = {};
+RAW.nodes.forEach(n => nodeIndex[n.id] = n);
+
+const prereqOf  = {};  // id → ids that are direct prerequisites OF id
+const dependsOn = {};  // id → ids that id feeds into
+RAW.nodes.forEach(n => { prereqOf[n.id] = []; dependsOn[n.id] = []; });
+RAW.edges.forEach(e => {
+  prereqOf[e.to].push(e.from);
+  dependsOn[e.from].push(e.to);
+});
+
+// ── BFS longest-path levels (fixes application nodes at wrong tier) ─────────
+const bfsLevels = (() => {
+  const levels = {};
+  const successors = {};
+  RAW.nodes.forEach(n => { levels[n.id] = -1; successors[n.id] = []; });
+  RAW.edges.forEach(e => successors[e.from].push(e.to));
+  const sources = RAW.nodes.filter(n => !RAW.edges.some(e => e.to === n.id));
+  const queue = sources.map(n => n.id);
+  queue.forEach(n => levels[n] = 0);
+  let i = 0;
+  while (i < queue.length) {
+    const cur = queue[i++];
+    for (const succ of successors[cur]) {
+      const nl = levels[cur] + 1;
+      if (levels[succ] < nl) { levels[succ] = nl; queue.push(succ); }
+    }
+  }
+  return levels;
+})();
+
+// ── graph algorithms ────────────────────────────────────────────────────────
+function getAncestors(targetId) {
+  const visited = new Set();
+  const queue = [targetId];
+  while (queue.length) {
+    const cur = queue.shift();
+    for (const p of prereqOf[cur])
+      if (!visited.has(p)) { visited.add(p); queue.push(p); }
+  }
+  return visited;
+}
+
+function topoSort(nodeSet) {
+  const inDeg = {};
+  nodeSet.forEach(n => inDeg[n] = 0);
+  nodeSet.forEach(n => { for (const p of prereqOf[n]) if (nodeSet.has(p)) inDeg[n]++; });
+  const reach = {};
+  nodeSet.forEach(n => {
+    let r = 0;
+    nodeSet.forEach(m => { if (m !== n && getAncestors(m).has(n)) r++; });
+    reach[n] = r;
+  });
+  const heap = [];
+  nodeSet.forEach(n => { if (inDeg[n] === 0) heap.push(n); });
+  heap.sort((a, b) => (reach[b] - reach[a]) || a.localeCompare(b));
+  const result = [];
+  while (heap.length) {
+    const node = heap.shift();
+    result.push(node);
+    for (const succ of dependsOn[node]) {
+      if (!nodeSet.has(succ)) continue;
+      if (--inDeg[succ] === 0) {
+        heap.push(succ);
+        heap.sort((a, b) => (reach[b] - reach[a]) || a.localeCompare(b));
+      }
+    }
+  }
+  return result;
+}
+
+// ── vis.js network ──────────────────────────────────────────────────────────
+const container = document.getElementById('graph-container');
+const visNodes = new vis.DataSet(RAW.nodes.map(n => ({
+  id: n.id,
+  label: n.label.replace(/ /g, '\n'),
+  level: bfsLevels[n.id] !== undefined ? bfsLevels[n.id] : n.tier,
+  color: n.color,
+  font: n.font,
+  shape: n.kind === 'concept' ? 'ellipse' : 'box',
+})));
+const visEdges = new vis.DataSet(RAW.edges.map((e, i) => ({
+  id: i, from: e.from, to: e.to,
+  arrows: 'to', color: {color: '#c8ccd4'}, width: 1,
+})));
+const network = new vis.Network(container, {nodes: visNodes, edges: visEdges}, {
+  layout: { hierarchical: {
+    enabled: true, direction: 'UD',
+    sortMethod: 'directed', levelSeparation: 85, nodeSpacing: 130,
+  } },
+  physics: { enabled: false },
+  interaction: { hover: true, tooltipDelay: 150 },
+  edges: { smooth: { type: 'cubicBezier', forceDirection: 'vertical' } },
+});
+
+// Compact layout: group by tier, sort alphabetically, left-align all nodes.
+network.once('afterDrawing', function() {
+  const pos = network.getPositions();
+  const spacing = 140;
+
+  // Group nodes by their BFS tier
+  const byTier = {};
+  RAW.nodes.forEach(n => {
+    const tier = bfsLevels[n.id] ?? n.tier ?? 0;
+    if (!byTier[tier]) byTier[tier] = [];
+    byTier[tier].push(n.id);
+  });
+
+  // Sort each tier alphabetically, assign X starting from 0
+  const tiers = Object.keys(byTier).map(Number).sort((a, b) => a - b);
+  const tierSep = 85;
+  tiers.forEach((tier, ti) => {
+    const ids = byTier[tier].sort();
+    const y = ti * tierSep;
+    ids.forEach((id, i) => {
+      network.moveNode(id, i * spacing, y);
+    });
+  });
+
+  network.fit({ animation: false });
+});
+
+function reCenterGraph() {
+  network.fit({ animation: true });
+}
+
+const C_PATH   = {background: '#fff9c4', border: '#f9a825'};
+const C_TARGET = {background: '#ffe082', border: '#e65100'};
+
+function resetColors() {
+  visNodes.update(RAW.nodes.map(n => ({id: n.id, color: n.color})));
+  visEdges.update(RAW.edges.map((e, i) => ({id: i, color: {color: '#c8ccd4'}, width: 1})));
+}
+
+// ── explanation panel ───────────────────────────────────────────────────────
+function renderExplanation(node) {
+  const kclass = node.kind;
+  const prereqChips = (node.prereqs || []).map(p =>
+    `<span class="prereq-chip" onclick="selectNode('${p}')">${p.replace(/_/g,' ')}</span>`
+  ).join('');
+  const metaItems = [
+    node.verifier ? `<span class="meta-item"><b>Verifier:</b> ${node.verifier}</span>` : '',
+    node.lab      ? `<span class="meta-item"><b>Lab:</b> ${node.lab}</span>` : '',
+  ].filter(Boolean).join('');
+  const playHtml = node.play
+    ? `<div class="section-label">Try it</div><div class="play-hint">${node.play}</div>`
+    : '';
+
+  const panel = document.getElementById('explain-panel');
+  panel.innerHTML = `
+    <div class="node-title">
+      <h2>${node.label}</h2>
+      <span class="badge ${kclass}">${kclass}</span>
+      <span class="tier-tag">BFS level ${bfsLevels[node.id] ?? node.tier}</span>
+    </div>
+    ${node.defines ? `<div class="defines">${node.defines}</div>` : ''}
+    ${prereqChips ? `<div class="section-label">Prerequisites</div><div class="prereq-list">${prereqChips}</div>` : ''}
+    ${metaItems ? `<div class="meta-row">${metaItems}</div>` : ''}
+    ${playHtml}
+  `;
+
+  // ── concept HTML detail ──
+  const conceptsBase = window.__cb_CONCEPTS_BASE;
+  const conceptUrls = window.__cb_CONCEPT_URLS || {};
+  const mappedUrl = conceptUrls[node.id];
+  if (mappedUrl || conceptsBase) {
+    const conceptUrl = mappedUrl || (conceptsBase + 'concept_' + encodeURIComponent(node.id) + '.html');
+    const detail = document.createElement('div');
+    detail.id = 'concept-detail';
+    detail.innerHTML = '<div class="section-label">Concept Detail</div><div class="concept-loading" style="color:#aaa;font-size:12px;padding:6px 0">Loading…</div>';
+    panel.appendChild(detail);
+    fetch(conceptUrl)
+      .then(r => {
+        if (!r.ok) throw new Error('not found');
+        return r.text();
+      })
+      .then(html => {
+        const slot = detail.querySelector('.concept-loading');
+        if (!slot) return;
+        // Vite dev server returns the SPA index.html (200) for missing static files.
+        // Verify we got a real concept page by checking for a known marker.
+        if (html.includes('spl-credit') || html.includes('Powered by')) {
+          const iframe = document.createElement('iframe');
+          iframe.id = 'concept-iframe';
+          iframe.src = conceptUrl;
+          slot.replaceWith(iframe);
+        } else {
+          slot.className = 'concept-not-found';
+          slot.textContent = 'Content not found — generate it first.';
+        }
+      })
+      .catch(() => {
+        const slot = detail.querySelector('.concept-loading');
+        if (slot) { slot.className = 'concept-not-found'; slot.textContent = 'Content not found — generate it first.'; }
+      });
+  }
+}
+
+// ── learning path sidebar ───────────────────────────────────────────────────
+function renderPathSidebar(orderedPath, targetId) {
+  const stepsEl = document.getElementById('path-steps');
+  const countEl = document.getElementById('path-count');
+  countEl.textContent = orderedPath.length
+    ? `${orderedPath.length} step${orderedPath.length !== 1 ? 's' : ''} to learn first`
+    : 'Root concept — no prerequisites';
+
+  const target = nodeIndex[targetId];
+  const kc = k => `${k.charAt(0).toUpperCase() + k.slice(1)}`;
+
+  stepsEl.innerHTML = orderedPath.map((n, i) => {
+    const nd = nodeIndex[n];
+    return `<div class="step-item" onclick="selectNode('${n}')">
+      <span class="step-num">${i + 1}.</span>
+      <div>
+        <div class="step-label">${nd.label}
+          <span class="step-kind ${nd.kind}-k">${nd.kind}</span>
+        </div>
+        ${nd.defines ? `<div class="step-def">${nd.defines}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('') + `<div class="step-item target">
+    <span class="step-num">▶</span>
+    <div>
+      <div class="step-label">${target.label}
+        <span class="step-kind ${target.kind}-k">${target.kind}</span>
+      </div>
+      ${target.defines ? `<div class="step-def">${target.defines}</div>` : ''}
+    </div>
+  </div>`;
+}
+
+// ── notes (localStorage) ────────────────────────────────────────────────────
+let currentNodeId = null;
+
+function noteKey(nodeId) { return `concept_notes_${DOMAIN_KEY}_${nodeId}`; }
+
+function loadNote(nodeId) {
+  const parsed = _parseNote(localStorage.getItem(noteKey(nodeId)));
+  return parsed ? parsed.text : '';
+}
+
+function saveNote(nodeId, text) {
+  if (text.trim()) {
+    const data = JSON.stringify({ text, ts: new Date().toISOString() });
+    localStorage.setItem(noteKey(nodeId), data);
+  } else {
+    localStorage.removeItem(noteKey(nodeId));
+  }
+  renderNotesList();
+}
+
+function _parseNote(raw) {
+  if (!raw) return null;
+  try { const d = JSON.parse(raw); return { text: d.text || '', ts: d.ts || '' }; }
+  catch (_) { return { text: raw, ts: '' }; }
+}
+
+function _fmtTs(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  const yy = d.getFullYear();
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const dd = String(d.getDate()).padStart(2,'0');
+  const hh = String(d.getHours()).padStart(2,'0');
+  const mi = String(d.getMinutes()).padStart(2,'0');
+  return `${yy}-${mm}-${dd} ${hh}:${mi}`;
+}
+
+function renderNotesList() {
+  const container = document.getElementById('notes-with-entries');
+  const entries = RAW.nodes
+    .filter(n => localStorage.getItem(noteKey(n.id)))
+    .map(n => {
+      const parsed = _parseNote(localStorage.getItem(noteKey(n.id)));
+      return {id: n.id, label: n.label, preview: (parsed?.text || '').slice(0, 60), ts: parsed?.ts || ''};
+    });
+  if (!entries.length) { container.innerHTML = ''; return; }
+  container.innerHTML = entries.map(e =>
+    `<div class="note-entry" onclick="selectNode('${e.id}')">
+      <div class="note-node">${e.label}<span class="note-ts">${_fmtTs(e.ts)}</span></div>
+      <div class="note-preview">${e.preview}</div>
+    </div>`
+  ).join('');
+}
+
+function switchNotes(nodeId) {
+  if (currentNodeId !== null) {
+    saveNote(currentNodeId, document.getElementById('notes-textarea').value);
+  }
+  currentNodeId = nodeId;
+  document.getElementById('notes-textarea').value = loadNote(nodeId);
+  document.getElementById('notes-node-label').textContent =
+    nodeIndex[nodeId]?.label || nodeId;
+}
+
+function clearNote() {
+  if (!currentNodeId) return;
+  document.getElementById('notes-textarea').value = '';
+  saveNote(currentNodeId, '');
+  const btn = document.getElementById('nb-clear-btn');
+  if (btn) { btn.textContent = 'Cleared!'; setTimeout(() => { btn.textContent = 'Clear'; }, 1000); }
+}
+
+function exportNotes() {
+  const notes = {};
+  RAW.nodes.forEach(n => {
+    const v = localStorage.getItem(noteKey(n.id));
+    if (v) notes[n.id] = v;
+  });
+  const blob = new Blob([JSON.stringify(notes, null, 2)], {type: 'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${DOMAIN_KEY}_notes.json`;
+  a.click();
+}
+
+document.getElementById('notes-textarea').addEventListener('input', () => {
+  if (currentNodeId) saveNote(currentNodeId, document.getElementById('notes-textarea').value);
+});
+
+// ── unified node select ─────────────────────────────────────────────────────
+function selectNode(nodeId) {
+  if (!nodeIndex[nodeId]) return;
+  network.selectNodes([nodeId]);
+  handleSelect(nodeId);
+}
+
+function handleSelect(targetId) {
+  const node = nodeIndex[targetId];
+
+  renderExplanation(node);
+  switchNotes(targetId);
+
+  const ancestors = getAncestors(targetId);
+  const pathSet = new Set([...ancestors]);
+  const orderedPath = topoSort(pathSet);
+
+  renderPathSidebar(orderedPath, targetId);
+
+  resetColors();
+  visNodes.update(orderedPath.map(n => ({id: n, color: C_PATH})));
+  visNodes.update([{id: targetId, color: C_TARGET}]);
+  visEdges.update(RAW.edges.map((e, i) => {
+    const inPath = pathSet.has(e.from) && (pathSet.has(e.to) || e.to === targetId);
+    return {id: i, color: {color: inPath ? '#f9a825' : '#c8ccd4'}, width: inPath ? 2 : 1};
+  }));
+}
+
+network.on('click', params => {
+  if (params.nodes.length) handleSelect(params.nodes[0]);
+});
+
+// initialise notes list on load
+renderNotesList();
+
+// When viewed directly (not in an iframe), inject a back link next to the
+// "Learning Path" heading so it doesn't look like a title-bar element.
+if (window.parent === window) {
+  var h1 = document.querySelector('#path-header h1');
+  if (h1) {
+    var backLink = document.createElement('a');
+    backLink.href = '../../';
+    backLink.textContent = '← App';
+    backLink.style.cssText = [
+      'font-size:10px','color:#2563eb','font-family:system-ui,sans-serif',
+      'text-decoration:none','font-weight:400','letter-spacing:normal',
+      'text-transform:none','white-space:nowrap','flex-shrink:0'
+    ].join(';');
+    var row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:baseline;gap:8px;';
+    h1.parentNode.insertBefore(row, h1);
+    row.appendChild(h1);
+    row.appendChild(backLink);
+  }
+}
+</script>
+</body>
+</html>
