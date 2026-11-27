@@ -1,0 +1,13 @@
+# Geometry, core level, English. One file per lesson in this folder; see docs/learn/content-format.md.
+domain: geometry
+graph: public/domains/geometry/input/graph.yaml
+level: core
+language: en
+title: Geometry
+tagline: From points and lines to measuring the world.
+applications:
+  navigation_surveying: Navigation & surveying
+  architecture_construction: Architecture & building
+  computer_graphics: Computer graphics & games
+  astronomy: Astronomy
+  art_and_design: Art & design

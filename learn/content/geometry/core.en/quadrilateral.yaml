@@ -1,0 +1,47 @@
+title: Four-sided shapes
+summary: "A four-sided shape — parallelograms, rectangles, rhombi, squares and more; angles add to 360°."
+minutes: 4
+cards:
+  - type: hook
+    text: Is a square a rectangle? Is a rectangle a square? People argue about this — the answer is surprisingly neat.
+    reveal: Every square **is** a rectangle (four right angles), but not every rectangle is a square.
+  - type: idea
+    text: |
+      A **quadrilateral** has 4 sides; its angles add to **360°** (two triangles).
+
+      - **Parallelogram** — both pairs of opposite sides parallel (and equal).
+      - **Rectangle** — a parallelogram with four right angles.
+      - **Rhombus** — a parallelogram with four equal sides.
+      - **Square** — both a rectangle and a rhombus.
+    svg: |
+      <svg viewBox="0 0 240 70"><polygon points="10,60 30,15 90,15 70,60"/><text x="14" y="70">parallelogram</text><rect class="a" x="110" y="15" width="55" height="45"/><text x="112" y="70">rectangle</text><rect x="185" y="15" width="45" height="45"/><text x="190" y="70">square</text></svg>
+  - type: steps
+    title: Worked example
+    problem: Three angles of a quadrilateral are 80°, 95° and 100°. Find the fourth.
+    steps:
+      - "The four angles add to 360°."
+      - "80° + 95° + 100° = 275°."
+      - "360° − 275° = **85°**."
+  - type: number
+    q: In a parallelogram, one angle is 70°. What is the angle **next to it**?
+    answer: 110
+    formula: "180 - 70"
+    unit: °
+    hint: Neighbouring angles sit between parallel sides, like co-interior angles.
+    explain: Neighbouring angles of a parallelogram add to 180°, so 180° − 70° = 110°.
+  - type: build
+  - type: choice
+    q: Is every square a rhombus?
+    options:
+      - text: Yes — it has four equal sides
+        correct: true
+        why: A rhombus only needs four equal sides; a square has them (plus right angles).
+      - text: No — a rhombus has no right angles
+        feedback: A rhombus may have right angles; it just doesn't need them. A square is a special rhombus.
+review:
+  - type: number
+    q: Three angles of a quadrilateral are 90°, 90° and 110°. What is the fourth?
+    answer: 70
+    formula: "360 - 90 - 90 - 110"
+    unit: °
+    explain: 360° − 290° = 70°.

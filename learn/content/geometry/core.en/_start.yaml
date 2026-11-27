@@ -1,0 +1,65 @@
+# The starter lesson: the five starting ideas everything else is built from.
+id: _start
+title: The building blocks
+minutes: 3
+teaches: [point, line, plane, distance, angle]
+summaries:
+  point: An exact location with no size.
+  line: Perfectly straight, endless both ways, with no width.
+  plane: A perfectly flat surface that goes on forever.
+  distance: How far apart two points are — never negative, the same both ways.
+  angle: The amount of turn between two paths that start at the same point.
+cards:
+  - type: hook
+    text: Every shape you've ever drawn — a house, a star, a pizza slice — is made from just **five ideas**. Can you guess one of them?
+    reveal: The five are **point, line, plane, distance** and **angle**. Geometry doesn't define them; it builds everything else out of them.
+  - type: idea
+    text: |
+      **Point** — an exact location. It has no size at all, just a position.
+
+      **Line** — perfectly straight, endless in both directions, with no width.
+
+      **Plane** — a perfectly flat surface that goes on forever, like an endless sheet of paper.
+    svg: |
+      <svg viewBox="0 0 240 120"><polygon class="soft" points="20,95 70,25 230,25 180,95"/><line class="a" x1="40" y1="80" x2="200" y2="40"/><circle class="dot" cx="120" cy="60" r="4"/><text x="126" y="76">point</text><text x="196" y="34">line</text><text x="26" y="112">plane</text></svg>
+  - type: choice
+    q: Which one has a position but **no size** at all?
+    options:
+      - text: A point
+        correct: true
+        why: Right — a point only marks where something is. The dot you draw is just a picture of it.
+      - text: A line
+        feedback: A line has length (endless, in fact). A point has no length, width or area.
+      - text: A plane
+        feedback: A plane stretches out in two directions. A point is the one with no size.
+  - type: idea
+    text: |
+      **Distance** — how far apart two points are. It's always zero or positive, and A to B is the same as B to A.
+
+      **Angle** — the amount of turn between two straight paths that start at the same point.
+    svg: |
+      <svg viewBox="0 0 240 110"><line x1="20" y1="30" x2="110" y2="30"/><circle class="dot" cx="20" cy="30" r="4"/><circle class="dot" cx="110" cy="30" r="4"/><text x="14" y="20">A</text><text x="106" y="20">B</text><text x="44" y="50">distance</text><line x1="140" y1="95" x2="230" y2="95"/><line x1="140" y1="95" x2="205" y2="35"/><path class="a" d="M175,95 A35,35 0 0 0 166,71"/><text x="180" y="82">angle</text></svg>
+  - type: predict
+    q: You walk from your door to the shop, then back. Is the distance back longer, shorter or the same?
+    options: [Longer, Shorter, The same]
+    reveal: The same. Distance doesn't care about direction — A to B equals B to A.
+  - type: choice
+    q: Two roads leave a crossroads. The amount you'd turn to go from one road onto the other is…
+    options:
+      - text: An angle
+        correct: true
+        why: Yes — an angle measures turn between two paths from one point.
+      - text: A distance
+        feedback: Distance is how far apart two points are. Turning is measured by an angle.
+      - text: A plane
+        feedback: A plane is a flat surface. The turn between two roads is an angle.
+review:
+  - type: choice
+    q: Which of the five building blocks measures **how far apart** two points are?
+    options:
+      - text: Distance
+        correct: true
+      - text: Angle
+        feedback: An angle measures turn, not separation.
+      - text: Line
+        feedback: A line is a straight path; the separation of two points is their distance.

@@ -1,0 +1,58 @@
+title: Proving triangles match
+summary: "SSS, SAS, ASA and AAS — three matching parts that prove two triangles are identical."
+minutes: 4
+cards:
+  - type: hook
+    text: A triangle has 6 parts — 3 sides and 3 angles. To prove two triangles are congruent, do you really need to check all 6?
+    reveal: No — just **3 well-chosen parts** are enough. Which three is the clever bit.
+  - type: idea
+    text: |
+      Two triangles are congruent if they match in any of these:
+
+      - **SSS** — all three sides.
+      - **SAS** — two sides and the angle **between** them.
+      - **ASA** — two angles and the side **between** them.
+      - **AAS** — two angles and a side **not** between them.
+
+      **AAA does not work**: same angles can still be different sizes.
+    svg: |
+      <svg viewBox="0 0 240 80"><polygon points="10,70 50,15 100,70"/><line class="a thick" x1="10" y1="70" x2="50" y2="15"/><line class="a thick" x1="10" y1="70" x2="100" y2="70"/><path class="a" d="M28,70 A18,18 0 0 0 21,55"/><text x="38" y="64">A</text><text x="2" y="38">S</text><text x="50" y="80">S</text><text x="120" y="45">SAS: angle between</text><text x="120" y="62">the two sides</text></svg>
+  - type: choice
+    q: Two triangles have two equal sides and the **angle between them** is equal. Which rule proves they're congruent?
+    options:
+      - text: SAS
+        correct: true
+        why: Side, Angle (between), Side.
+      - text: SSS
+        feedback: SSS needs all three sides. Here we know two sides and the angle between.
+      - text: AAA
+        feedback: AAA never proves congruence. This is SAS.
+  - type: build
+  - type: choice
+    q: Which of these does **not** prove two triangles are congruent?
+    options:
+      - text: All three angles equal (AAA)
+        correct: true
+        why: A small and a large equilateral triangle have the same angles but different sizes.
+      - text: All three sides equal (SSS)
+        feedback: SSS always proves congruence. AAA is the one that fails.
+      - text: Two angles and the side between them (ASA)
+        feedback: ASA always proves congruence. AAA is the one that fails.
+  - type: order
+    q: "Put the steps of a congruence proof in order:"
+    items:
+      - Mark the equal parts you know
+      - Check they match a rule (SSS, SAS, ASA or AAS)
+      - Conclude the triangles are congruent
+      - Use it — matching parts are equal
+    explain: Evidence, then the rule, then the conclusion — and only then use the matching parts.
+review:
+  - type: choice
+    q: Two angles and the side **between** them match. That's…
+    options:
+      - text: ASA
+        correct: true
+      - text: AAS
+        feedback: AAS is when the side is not between the two angles.
+      - text: SAS
+        feedback: SAS is two sides with the angle between them.

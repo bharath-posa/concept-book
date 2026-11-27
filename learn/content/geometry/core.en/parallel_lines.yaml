@@ -1,0 +1,51 @@
+title: Parallel lines
+summary: "Lines that never meet; a line crossing them makes matching equal angles."
+minutes: 4
+cards:
+  - type: hook
+    text: Railway tracks run side by side for hundreds of kilometres and never touch. What keeps them from crossing?
+    reveal: They're **parallel** — they always point in the same direction, so they never meet.
+  - type: idea
+    text: |
+      **Parallel lines** lie in the same plane and never meet.
+
+      A **transversal** is a line that crosses them. It makes 8 angles, and they come in matching sets:
+
+      - **Corresponding** angles (same position at each crossing) are **equal**.
+      - **Alternate interior** angles (inside, opposite sides) are **equal**.
+      - **Co-interior** angles (inside, same side) **add to 180°**.
+    svg: |
+      <svg viewBox="0 0 240 120"><line x1="10" y1="35" x2="230" y2="35"/><line x1="10" y1="85" x2="230" y2="85"/><line class="a" x1="70" y1="115" x2="170" y2="5"/><path class="a" d="M155,35 A12,12 0 0 0 151,26"/><path class="a" d="M109,85 A12,12 0 0 0 105,76"/><text x="160" y="28">65°</text><text x="115" y="78">65°</text><text x="190" y="50">corresponding</text></svg>
+  - type: steps
+    title: Worked example
+    problem: A transversal crosses two parallel lines. One angle is 65°. Find its corresponding angle and its co-interior partner.
+    steps:
+      - "Corresponding angles are equal → **65°**."
+      - "Co-interior angles add to 180° → 180° − 65° = **115°**."
+  - type: number
+    q: Two parallel lines are cut by a transversal. One interior angle is 72°. What is its **co-interior** partner?
+    answer: 108
+    formula: "180 - 72"
+    unit: °
+    explain: Co-interior angles add to 180°, so 180° − 72° = 108°.
+  - type: build
+  - type: choice
+    q: An alternate interior angle to a 50° angle is…
+    options:
+      - text: 50°
+        correct: true
+        why: Alternate interior angles between parallel lines are equal.
+      - text: 130°
+        feedback: 130° would be the co-interior partner (adds to 180°). Alternate angles are equal.
+      - text: 40°
+        feedback: 40° is the complement. Alternate interior angles are equal — 50°.
+review:
+  - type: choice
+    q: Between parallel lines, which angle pair **adds to 180°**?
+    options:
+      - text: Co-interior angles
+        correct: true
+      - text: Corresponding angles
+        feedback: Corresponding angles are equal, not supplementary.
+      - text: Alternate interior angles
+        feedback: Alternate interior angles are equal. Co-interior ones add to 180°.

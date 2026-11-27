@@ -1,0 +1,55 @@
+title: Polygons
+summary: "A closed flat shape with straight sides; its inside angles add to (n − 2) × 180°."
+minutes: 4
+cards:
+  - type: hook
+    text: A stop sign has 8 sides. Without measuring, can you say what all its inside angles add up to?
+    reveal: Yes — **1080°**. Every polygon follows the same simple rule. Let's find it.
+  - type: idea
+    text: |
+      A **polygon** is a closed flat shape made only of straight line segments (its **sides**), meeting at **vertices**.
+
+      Triangle (3 sides), quadrilateral (4), pentagon (5), hexagon (6), octagon (8)…
+
+      A circle is **not** a polygon — it has no straight sides.
+    svg: |
+      <svg viewBox="0 0 240 90"><polygon points="20,75 50,15 80,75"/><polygon points="100,20 150,20 150,70 100,70"/><polygon class="a" points="195,12 228,36 216,75 174,75 162,36"/></svg>
+  - type: steps
+    title: The angle-sum rule
+    problem: Why do a polygon's inside angles add to (n − 2) × 180°?
+    steps:
+      - From one corner, draw lines to every other corner. A polygon with **n** sides splits into **n − 2** triangles.
+      - Each triangle's angles add to 180°.
+      - "So the total is **(n − 2) × 180°**. Pentagon: 3 × 180° = 540°."
+    svg: |
+      <svg viewBox="0 0 240 100"><polygon points="120,10 200,45 170,95 70,95 40,45"/><line class="a" x1="120" y1="10" x2="170" y2="95"/><line class="a" x1="120" y1="10" x2="70" y2="95"/></svg>
+  - type: number
+    q: What do the inside angles of a **hexagon** (6 sides) add up to?
+    answer: 720
+    formula: "(6 - 2) * 180"
+    unit: °
+    explain: (6 − 2) × 180° = 4 × 180° = 720°.
+  - type: build
+  - type: number
+    q: A regular octagon has 8 equal angles. How big is each one?
+    answer: 135
+    formula: "(8 - 2) * 180 / 8"
+    unit: °
+    hint: Find the total first, then share it equally.
+    explain: Total (8 − 2) × 180° = 1080°; 1080° ÷ 8 = 135°.
+review:
+  - type: number
+    q: What do the inside angles of a pentagon add up to?
+    answer: 540
+    formula: "(5 - 2) * 180"
+    unit: °
+    explain: (5 − 2) × 180° = 540°.
+  - type: choice
+    q: Which of these is **not** a polygon?
+    options:
+      - text: A circle
+        correct: true
+      - text: A triangle
+        feedback: A triangle is made of 3 straight sides — a polygon.
+      - text: A stop sign
+        feedback: A stop sign is an octagon — 8 straight sides.

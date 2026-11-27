@@ -223,3 +223,6 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 public/domains/catalog.json.lock
+
+# Built by scripts/learn/build_lessons.py (ConceptBook Learn fetches and builds these itself)
+public/learn/
