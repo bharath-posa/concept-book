@@ -1,0 +1,62 @@
+title: Measuring angles
+minutes: 4
+cards:
+  - type: hook
+    text: Skateboarders talk about a "180" and a "360". What are they counting?
+    reveal: '**Degrees** of turn. A 360 is one full spin; a 180 is half a spin.'
+  - type: idea
+    text: |
+      We measure angles in **degrees (°)**. A full turn is 360°.
+
+      - **Acute**: less than 90°
+      - **Right**: exactly 90° (a square corner)
+      - **Obtuse**: between 90° and 180°
+      - **Straight**: exactly 180° (a straight line)
+    svg: |
+      <svg viewBox="0 0 240 80"><line x1="10" y1="65" x2="60" y2="65"/><line x1="10" y1="65" x2="45" y2="30"/><text x="10" y="78">acute</text><line x1="85" y1="65" x2="135" y2="65"/><line x1="85" y1="65" x2="85" y2="15"/><rect class="a" x="85" y="55" width="10" height="10"/><text x="88" y="78">right</text><line x1="160" y1="65" x2="210" y2="65"/><line x1="160" y1="65" x2="130" y2="25"/><text x="160" y="78">obtuse</text></svg>
+  - type: choice
+    q: An angle measures 135°. What kind is it?
+    options:
+      - text: Obtuse
+        correct: true
+        why: 135° is more than 90° but less than 180°.
+      - text: Acute
+        feedback: Acute angles are smaller than 90°. 135° is bigger.
+      - text: Straight
+        feedback: Straight is exactly 180°. 135° is less than that.
+  - type: steps
+    title: Angles that add up
+    problem: Two angles that make a right angle together are **complementary** (sum 90°). Two that make a straight line are **supplementary** (sum 180°). What's the supplement of 110°?
+    steps:
+      - Supplementary means the two add to 180°.
+      - "180° − 110° = **70°**."
+  - type: number
+    q: What is the **complement** of 35°?
+    answer: 55
+    formula: "90 - 35"
+    unit: °
+    hint: Complementary angles add to 90°.
+    explain: 90° − 35° = 55°.
+  - type: build
+  - type: number
+    q: A pizza is cut into 8 equal slices from the centre. What angle is each slice?
+    answer: 45
+    formula: "360 / 8"
+    unit: °
+    explain: A full turn is 360°, so 360° ÷ 8 = 45°.
+review:
+  - type: number
+    q: What is the supplement of 65°?
+    answer: 115
+    formula: "180 - 65"
+    unit: °
+    explain: 180° − 65° = 115°.
+  - type: choice
+    q: A square corner measures…
+    options:
+      - text: 90°
+        correct: true
+      - text: 180°
+        feedback: 180° is a straight line. A square corner is a right angle, 90°.
+      - text: 45°
+        feedback: 45° is half a right angle. A square corner is 90°.

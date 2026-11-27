@@ -1,0 +1,43 @@
+title: Congruent shapes
+minutes: 3
+cards:
+  - type: hook
+    text: Two jigsaw pieces look identical. How could you prove they're exactly the same size and shape — without measuring every edge?
+    reveal: Slide, turn or flip one until it sits **exactly on top** of the other. If it fits perfectly, they're **congruent**.
+  - type: idea
+    text: |
+      Two shapes are **congruent** (≅) if a rigid motion moves one exactly onto the other.
+
+      Then every matching side and matching angle is equal.
+
+      The order of letters matters: △ABC ≅ △DEF means A matches D, B matches E and C matches F.
+    svg: |
+      <svg viewBox="0 0 240 90"><polygon points="20,80 60,15 100,80"/><text x="10" y="88">A</text><text x="56" y="12">B</text><text x="100" y="88">C</text><polygon class="a" points="140,80 180,15 220,80"/><text x="130" y="88">D</text><text x="176" y="12">E</text><text x="220" y="88">F</text><text x="108" y="50">≅</text></svg>
+  - type: number
+    q: △ABC ≅ △DEF and AB = 5 cm. How long is DE?
+    answer: 5
+    formula: "5"
+    unit: cm
+    hint: A matches D and B matches E.
+    explain: AB matches DE, and matching sides of congruent shapes are equal — 5 cm.
+  - type: build
+  - type: choice
+    q: △PQR ≅ △XYZ. Which angle equals ∠Q?
+    options:
+      - text: ∠Y
+        correct: true
+        why: Q is the second letter, so it matches Y, the second letter.
+      - text: ∠X
+        feedback: X matches P (both first). Q is second, so it matches Y.
+      - text: ∠Z
+        feedback: Z matches R (both third). Q matches Y.
+review:
+  - type: choice
+    q: Two shapes are congruent when…
+    options:
+      - text: A slide, turn or flip moves one exactly onto the other
+        correct: true
+      - text: They have the same area
+        feedback: Different shapes can share an area. Congruent means a rigid motion fits one exactly on the other.
+      - text: They have the same angles
+        feedback: Same angles but different sizes is similarity, not congruence.

@@ -1,0 +1,58 @@
+title: Pythagoras' theorem
+minutes: 4
+cards:
+  - type: hook
+    text: Builders mark 3 m along one wall, 4 m along the other, and check the diagonal is exactly 5 m. Why does that guarantee a perfect square corner?
+    reveal: Because 3² + 4² = 5². That's **Pythagoras' theorem** — and it works in reverse too.
+  - type: idea
+    text: |
+      In a **right triangle**, the longest side (opposite the right angle) is the **hypotenuse**, c. The other two are the legs, a and b.
+
+      **a² + b² = c²**
+
+      The squares on the two legs together have exactly the area of the square on the hypotenuse.
+    svg: |
+      <svg viewBox="0 0 240 110"><polygon points="40,90 40,30 120,90"/><rect class="a" x="40" y="82" width="8" height="8"/><text x="24" y="64">a</text><text x="76" y="104">b</text><text x="86" y="54">c</text><text x="140" y="60">a² + b² = c²</text></svg>
+  - type: steps
+    title: Worked example
+    problem: A right triangle has legs 3 and 4. How long is the hypotenuse?
+    steps:
+      - "c² = 3² + 4² = 9 + 16 = 25."
+      - "c = √25 = **5**."
+  - type: number
+    q: A right triangle has legs 6 cm and 8 cm. How long is the hypotenuse?
+    answer: 10
+    formula: "sqrt(6**2 + 8**2)"
+    unit: cm
+    explain: √(36 + 64) = √100 = 10 cm.
+  - type: build
+  - type: number
+    q: The hypotenuse is 13 and one leg is 5. How long is the other leg?
+    answer: 12
+    formula: "sqrt(13**2 - 5**2)"
+    hint: Rearrange — b² = c² − a².
+    explain: b² = 169 − 25 = 144, so b = 12.
+  - type: choice
+    q: Do sides 7, 24 and 25 make a right triangle?
+    options:
+      - text: Yes — 7² + 24² = 25²
+        correct: true
+        why: 49 + 576 = 625 = 25². When the squares add up, the corner is square.
+      - text: No — only 3, 4, 5 works
+        feedback: Many sets work. Check — 49 + 576 = 625 = 25².
+review:
+  - type: number
+    q: A 10 m ladder leans on a wall with its foot 6 m out. How high up the wall does it reach?
+    answer: 8
+    formula: "sqrt(10**2 - 6**2)"
+    unit: m
+    explain: √(100 − 36) = √64 = 8 m.
+  - type: choice
+    q: The hypotenuse is always…
+    options:
+      - text: The side opposite the right angle (the longest)
+        correct: true
+      - text: The shortest side
+        feedback: The hypotenuse is the longest side, opposite the right angle.
+      - text: Any side next to the right angle
+        feedback: Those are the legs. The hypotenuse is opposite the right angle.

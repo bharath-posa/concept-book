@@ -1,0 +1,50 @@
+title: Triangles
+minutes: 4
+cards:
+  - type: hook
+    text: Tear the three corners off any paper triangle and put them side by side. What shape do they always make?
+    reveal: A **straight line**. That's why every triangle's angles add up to **180°**.
+  - type: idea
+    text: |
+      A **triangle** is a polygon with 3 sides. Its three inside angles always add up to **180°**.
+
+      By sides, a triangle is **equilateral** (all 3 equal), **isosceles** (2 equal) or **scalene** (none equal).
+    svg: |
+      <svg viewBox="0 0 240 90"><polygon points="20,80 120,10 200,80"/><path class="a" d="M40,80 A20,20 0 0 0 36,69"/><path class="a" d="M180,80 A20,20 0 0 1 185,67"/><path class="a" d="M108,18 A15,15 0 0 0 131,19"/><text x="48" y="75">a</text><text x="168" y="75">c</text><text x="116" y="38">b</text><text x="150" y="20">a + b + c = 180°</text></svg>
+  - type: steps
+    title: Worked example
+    problem: Two angles of a triangle are 50° and 60°. Find the third.
+    steps:
+      - "The three angles add to 180°."
+      - "50° + 60° = 110°."
+      - "180° − 110° = **70°**."
+  - type: number
+    q: A right triangle has one angle of 35°. What is the third angle?
+    answer: 55
+    formula: "180 - 90 - 35"
+    unit: °
+    hint: A right triangle already has one 90° angle.
+    explain: 180° − 90° − 35° = 55°.
+  - type: build
+  - type: number
+    q: Each angle of an **equilateral** triangle measures…
+    answer: 60
+    formula: "180 / 3"
+    unit: °
+    explain: All three are equal, so 180° ÷ 3 = 60°.
+review:
+  - type: number
+    q: Two angles of a triangle are 40° and 75°. What is the third?
+    answer: 65
+    formula: "180 - 40 - 75"
+    unit: °
+    explain: 180° − 40° − 75° = 65°.
+  - type: choice
+    q: A triangle with exactly two equal sides is…
+    options:
+      - text: Isosceles
+        correct: true
+      - text: Equilateral
+        feedback: Equilateral means all three sides are equal.
+      - text: Scalene
+        feedback: Scalene means no sides are equal.

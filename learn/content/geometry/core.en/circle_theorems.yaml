@@ -1,0 +1,46 @@
+title: Angles in circles
+minutes: 4
+cards:
+  - type: hook
+    text: Stand anywhere on the edge of a round fountain and look at the two ends of a diameter. What angle do your lines of sight make — wherever you stand?
+    reveal: Always exactly **90°**. Circles hide surprisingly neat angle rules.
+  - type: idea
+    text: |
+      - **Inscribed angle**: an angle with its corner on the circle is **half** the **central angle** (corner at the centre) standing on the same arc.
+      - **Angle in a semicircle**: standing on a diameter, it's always **90°** (because the central angle is 180°).
+      - **Tangent**: a line touching the circle at one point is **at right angles to the radius** there.
+    svg: |
+      <svg viewBox="0 0 240 120"><circle cx="90" cy="60" r="50"/><circle class="dot" cx="90" cy="60" r="3"/><line class="faint" x1="50" y1="90" x2="90" y2="60"/><line class="faint" x1="130" y1="90" x2="90" y2="60"/><line class="a" x1="50" y1="90" x2="90" y2="10"/><line class="a" x1="130" y1="90" x2="90" y2="10"/><text x="80" y="80">2x</text><text x="84" y="32">x</text><text x="150" y="50">inscribed =</text><text x="150" y="66">½ central</text></svg>
+  - type: number
+    q: A central angle is 100°. What is the inscribed angle on the same arc?
+    answer: 50
+    formula: "100 / 2"
+    unit: °
+    explain: Half of 100° is 50°.
+  - type: build
+  - type: number
+    q: An inscribed angle is 35°. What is the central angle on the same arc?
+    answer: 70
+    formula: "35 * 2"
+    unit: °
+    explain: The central angle is twice the inscribed angle — 70°.
+  - type: choice
+    q: A tangent touches a circle at P. The angle between the tangent and the radius to P is…
+    options:
+      - text: 90°
+        correct: true
+        why: A tangent is always perpendicular to the radius at the point of contact.
+      - text: 45°
+        feedback: It's always a right angle — 90°.
+      - text: It depends on the circle's size
+        feedback: Any circle, any size — tangent and radius meet at 90°.
+review:
+  - type: choice
+    q: Any angle standing on a diameter, with its corner on the circle, measures…
+    options:
+      - text: 90°
+        correct: true
+      - text: 180°
+        feedback: 180° is the central angle on a diameter. The inscribed angle is half — 90°.
+      - text: 60°
+        feedback: Always 90° — half of the 180° central angle.

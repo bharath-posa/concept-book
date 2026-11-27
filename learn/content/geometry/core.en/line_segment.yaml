@@ -1,0 +1,47 @@
+title: Line segment
+minutes: 3
+cards:
+  - type: hook
+    text: A line goes on forever. But the edge of your phone stops. So what is the edge of your phone?
+    reveal: A **line segment** — the piece of a line between two endpoints.
+  - type: idea
+    text: |
+      A **line segment** AB is the part of a line from point A to point B, including both ends.
+
+      Its **length** is the distance from A to B. Its **midpoint** is the point exactly halfway.
+    svg: |
+      <svg viewBox="0 0 240 70"><line class="faint" x1="5" y1="35" x2="235" y2="35"/><line class="a thick" x1="50" y1="35" x2="190" y2="35"/><circle class="dot" cx="50" cy="35" r="4"/><circle class="dot" cx="190" cy="35" r="4"/><circle class="dot" cx="120" cy="35" r="3"/><text x="44" y="58">A</text><text x="184" y="58">B</text><text x="98" y="22">midpoint</text></svg>
+  - type: steps
+    title: Worked example
+    problem: On a number line, A is at 2 and B is at 9. How long is AB, and where is its midpoint?
+    steps:
+      - "Length = bigger − smaller = 9 − 2 = **7**."
+      - "Midpoint = halfway = (2 + 9) ÷ 2 = **5.5**."
+      - Check — 5.5 is 3.5 from each end. ✓
+  - type: number
+    q: A is at −3 and B is at 5 on a number line. How long is segment AB?
+    answer: 8
+    formula: "5 - (-3)"
+    hint: Bigger minus smaller — careful with the minus sign.
+    explain: 5 − (−3) = 5 + 3 = 8.
+  - type: build
+  - type: number
+    q: The midpoint of a segment from 4 to 10 is at…
+    answer: 7
+    formula: "(4 + 10) / 2"
+    explain: (4 + 10) ÷ 2 = 7, which is 3 from each end.
+review:
+  - type: number
+    q: A is at 1 and B is at 13. Where is the midpoint of AB?
+    answer: 7
+    formula: "(1 + 13) / 2"
+    explain: (1 + 13) ÷ 2 = 7.
+  - type: choice
+    q: How many endpoints does a line segment have?
+    options:
+      - text: "2"
+        correct: true
+      - text: "1"
+        feedback: One endpoint is a ray. A segment stops at both ends.
+      - text: "0"
+        feedback: No endpoints is a full line. A segment has two.

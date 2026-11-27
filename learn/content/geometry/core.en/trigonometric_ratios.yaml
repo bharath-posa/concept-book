@@ -1,0 +1,59 @@
+title: Sin, cos and tan
+minutes: 5
+cards:
+  - type: hook
+    text: A surveyor can find the height of a mountain without climbing it — just by measuring one angle and one distance. How?
+    reveal: With **trigonometric ratios**. In similar right triangles, the side ratios depend only on the angle.
+  - type: idea
+    text: |
+      In a right triangle, pick an angle θ. Name the sides from θ's point of view: **opposite**, **adjacent** (next to it, not the hypotenuse) and **hypotenuse**.
+
+      - **sin θ = opposite ÷ hypotenuse**
+      - **cos θ = adjacent ÷ hypotenuse**
+      - **tan θ = opposite ÷ adjacent**
+
+      Memory trick: **SOH CAH TOA**.
+    svg: |
+      <svg viewBox="0 0 240 110"><polygon points="30,95 190,95 190,20"/><rect class="a" x="182" y="87" width="8" height="8"/><path class="a" d="M60,95 A30,30 0 0 0 57,82"/><text x="64" y="90">θ</text><text x="196" y="62">opposite</text><text x="88" y="108">adjacent</text><text x="80" y="50">hypotenuse</text></svg>
+  - type: steps
+    title: Worked example
+    problem: A right triangle has sides 3, 4 and 5. For the angle θ opposite the side 3, find sin, cos and tan.
+    steps:
+      - "Opposite = 3, adjacent = 4, hypotenuse = 5."
+      - "sin θ = 3/5 = **0.6**, cos θ = 4/5 = **0.8**, tan θ = 3/4 = **0.75**."
+  - type: number
+    q: In a right triangle the side adjacent to θ is 8 and the hypotenuse is 10. What is cos θ?
+    answer: 0.8
+    formula: "8 / 10"
+    explain: cos θ = adjacent ÷ hypotenuse = 8 ÷ 10 = 0.8.
+  - type: build
+  - type: number
+    q: A 12 m ramp rises at 30° to the ground. How high does it rise? (sin 30° = 0.5)
+    answer: 6
+    formula: "12 * sin(radians(30))"
+    unit: m
+    hint: Height is opposite the 30° angle; the ramp is the hypotenuse.
+    explain: height = 12 × sin 30° = 12 × 0.5 = 6 m.
+  - type: number
+    q: A 10 m ladder makes a 60° angle with the ground. How high up the wall does it reach? (Round to 2 decimal places.)
+    answer: 8.66
+    formula: "10 * sin(radians(60))"
+    tolerance: 0.01
+    unit: m
+    hint: Use sin, and a calculator for sin 60°.
+    explain: 10 × sin 60° ≈ 10 × 0.866 = 8.66 m.
+review:
+  - type: choice
+    q: Which ratio is opposite ÷ adjacent?
+    options:
+      - text: tan
+        correct: true
+      - text: sin
+        feedback: sin is opposite ÷ hypotenuse (SOH).
+      - text: cos
+        feedback: cos is adjacent ÷ hypotenuse (CAH).
+  - type: number
+    q: The side opposite θ is 5 and the hypotenuse is 10. What is sin θ?
+    answer: 0.5
+    formula: "5 / 10"
+    explain: sin θ = 5 ÷ 10 = 0.5.

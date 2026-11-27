@@ -1,0 +1,42 @@
+title: The coordinate plane
+minutes: 3
+cards:
+  - type: hook
+    text: How does a map app tell a delivery driver *exactly* where you are, using just two numbers?
+    reveal: With **coordinates** — one number for across, one for up.
+  - type: idea
+    text: |
+      Two number lines cross at the **origin** (0, 0): the **x-axis** (across) and the **y-axis** (up).
+
+      A point is written **(x, y)**: go x across (right if positive), then y up (down if negative).
+
+      The axes split the plane into four **quadrants**, numbered I to IV anticlockwise from top right.
+    svg: |
+      <svg viewBox="0 0 240 120"><line class="faint" x1="10" y1="60" x2="230" y2="60"/><line class="faint" x1="120" y1="5" x2="120" y2="115"/><circle class="dot" cx="165" cy="90" r="4"/><line class="a" x1="120" y1="60" x2="165" y2="60"/><line class="a" x1="165" y1="60" x2="165" y2="90"/><text x="170" y="104">(3, −2)</text><text x="190" y="25">I</text><text x="40" y="25">II</text><text x="40" y="104">III</text><text x="214" y="104">IV</text></svg>
+  - type: choice
+    q: In which quadrant is the point (−2, 5)?
+    options:
+      - text: II
+        correct: true
+        why: Left (negative x) and up (positive y) is quadrant II.
+      - text: I
+        feedback: Quadrant I needs both numbers positive. x = −2 is to the left.
+      - text: IV
+        feedback: Quadrant IV is right and down. (−2, 5) is left and up — quadrant II.
+  - type: build
+  - type: number
+    q: How far apart are (1, 4) and (7, 4)?
+    answer: 6
+    formula: "7 - 1"
+    hint: They're at the same height, so just compare the x values.
+    explain: Same y, so the distance is 7 − 1 = 6.
+review:
+  - type: choice
+    q: The point (0, 0) is called the…
+    options:
+      - text: Origin
+        correct: true
+      - text: Axis
+        feedback: The axes are the two number lines. Where they cross, (0, 0), is the origin.
+      - text: Quadrant
+        feedback: Quadrants are the four regions. (0, 0) is the origin.

@@ -1,0 +1,11 @@
+[
+ {
+  "file": "geometry.core.en.json",
+  "domain": "geometry",
+  "title": "Geometry",
+  "tagline": "From points and lines to measuring the world.",
+  "level": "core",
+  "language": "en",
+  "lessons": 20
+ }
+]

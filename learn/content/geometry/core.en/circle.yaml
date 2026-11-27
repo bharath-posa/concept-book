@@ -1,0 +1,46 @@
+title: Circles
+minutes: 3
+cards:
+  - type: hook
+    text: Tie a string to a peg, pull it tight and walk around. What shape do your footprints make — and why?
+    reveal: A **circle** — every footprint is the same distance from the peg.
+  - type: idea
+    text: |
+      A **circle** is every point at the same distance from a **centre**.
+
+      - That distance is the **radius** (r).
+      - The **diameter** goes right across through the centre: d = 2r.
+      - The distance around is the **circumference**: C = 2πr (π ≈ 3.14).
+    svg: |
+      <svg viewBox="0 0 240 110"><circle cx="90" cy="55" r="45"/><circle class="dot" cx="90" cy="55" r="3"/><line class="a" x1="90" y1="55" x2="135" y2="55"/><text x="104" y="49">r</text><line class="faint" x1="45" y1="55" x2="90" y2="55"/><text x="150" y="40">d = 2r</text><text x="150" y="62">C = 2πr</text></svg>
+  - type: steps
+    title: Worked example
+    problem: A wheel has radius 3 cm. Find its diameter and circumference.
+    steps:
+      - "Diameter = 2 × 3 = **6 cm**."
+      - "Circumference = 2 × π × 3 = 6π ≈ **18.85 cm**."
+  - type: number
+    q: A circle has radius 5 cm. What is its circumference? (Round to 2 decimal places.)
+    answer: 31.42
+    formula: "2 * pi * 5"
+    tolerance: 0.05
+    unit: cm
+    hint: C = 2πr. Use π ≈ 3.1416 or your calculator's π.
+    explain: C = 2 × π × 5 = 10π ≈ 31.42 cm.
+  - type: build
+  - type: number
+    q: A circle's diameter is 14 cm. What is its radius?
+    answer: 7
+    formula: "14 / 2"
+    unit: cm
+    explain: The radius is half the diameter — 14 ÷ 2 = 7 cm.
+review:
+  - type: choice
+    q: The distance from the centre of a circle to its edge is the…
+    options:
+      - text: Radius
+        correct: true
+      - text: Diameter
+        feedback: The diameter goes all the way across — twice the radius.
+      - text: Circumference
+        feedback: The circumference is the distance around the circle.

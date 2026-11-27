@@ -1,0 +1,53 @@
+title: Area
+minutes: 4
+cards:
+  - type: hook
+    text: You're tiling a floor 7 m long and 4 m wide with 1 m square tiles. How many tiles do you need — without counting?
+    reveal: '**28** — that''s the floor''s **area**, 7 × 4 square metres.'
+  - type: idea
+    text: |
+      **Area** is how much flat space a shape covers, in **square units** (cm², m²).
+
+      - Rectangle: **length × width**
+      - Parallelogram: **base × height**
+      - Triangle: **½ × base × height**
+
+      The height is always measured **at right angles** to the base.
+    svg: |
+      <svg viewBox="0 0 240 90"><polygon points="20,80 140,80 100,20"/><line class="a" x1="100" y1="20" x2="100" y2="80"/><rect class="a" x="100" y="72" width="8" height="8"/><text x="104" y="50">h</text><text x="70" y="94">base</text><text x="150" y="50">½ × b × h</text></svg>
+  - type: steps
+    title: Why a triangle is half
+    problem: Why does a triangle get ½ × base × height?
+    steps:
+      - Make a copy of the triangle and turn it around.
+      - The two fit together into a **parallelogram** with the same base and height.
+      - So one triangle is **half** of base × height.
+  - type: number
+    q: A triangle has base 10 cm and height 6 cm. What is its area?
+    answer: 30
+    formula: "0.5 * 10 * 6"
+    unit: cm²
+    explain: ½ × 10 × 6 = 30 cm².
+  - type: build
+  - type: number
+    q: A parallelogram has base 9 m and height 5 m. What is its area?
+    answer: 45
+    formula: "9 * 5"
+    unit: m²
+    explain: Base × height = 9 × 5 = 45 m².
+review:
+  - type: number
+    q: A rectangle is 12 cm by 5 cm. What is its area?
+    answer: 60
+    formula: "12 * 5"
+    unit: cm²
+    explain: 12 × 5 = 60 cm².
+  - type: choice
+    q: The height of a triangle must be measured…
+    options:
+      - text: At right angles to the base
+        correct: true
+      - text: Along a slanted side
+        feedback: A slanted side is usually longer than the height. Height is perpendicular to the base.
+      - text: From the middle of the base to anywhere
+        feedback: Height is the perpendicular distance from the base to the opposite corner.

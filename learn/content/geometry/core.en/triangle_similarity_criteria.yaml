@@ -1,0 +1,51 @@
+title: Spotting similar triangles
+minutes: 4
+cards:
+  - type: hook
+    text: How could you measure a tree's height with only a measuring tape and a sunny day?
+    reveal: Measure **shadows**. The tree and a stick make **similar triangles** with their shadows.
+  - type: idea
+    text: |
+      Two triangles are similar if:
+
+      - **AA** — two angles match (the third then matches too), or
+      - **SAS∼** — two pairs of sides are in the same ratio with the angle between them equal, or
+      - **SSS∼** — all three pairs of sides are in the same ratio.
+
+      AA is the one you'll use most.
+    svg: |
+      <svg viewBox="0 0 240 100"><line x1="5" y1="90" x2="235" y2="90"/><line class="a thick" x1="40" y1="90" x2="40" y2="62"/><line class="faint" x1="40" y1="62" x2="82" y2="90"/><text x="22" y="80">2</text><text x="54" y="100">3</text><line class="a thick" x1="120" y1="90" x2="120" y2="20"/><line class="faint" x1="120" y1="20" x2="225" y2="90"/><text x="102" y="58">?</text><text x="164" y="100">15</text></svg>
+  - type: steps
+    title: Worked example — the tree
+    problem: A 2 m stick casts a 3 m shadow. At the same moment a tree casts a 15 m shadow. How tall is the tree?
+    steps:
+      - The sun hits both at the same angle, and both stand at right angles to the ground → **AA**, so the triangles are similar.
+      - Scale factor = 15 ÷ 3 = 5.
+      - "Tree = 2 × 5 = **10 m**."
+  - type: number
+    q: A 1.5 m person casts a 2 m shadow. A building casts a 40 m shadow. How tall is the building?
+    answer: 30
+    formula: "1.5 * 40 / 2"
+    unit: m
+    explain: Scale factor 40 ÷ 2 = 20, so 1.5 × 20 = 30 m.
+  - type: build
+  - type: choice
+    q: Two triangles each have angles of 40° and 60°. Are they similar?
+    options:
+      - text: Yes — by AA
+        correct: true
+        why: Two matching angles are enough; the third must be 80° in both.
+      - text: Only if their sides are equal
+        feedback: Equal sides would make them congruent. For similarity, two equal angles (AA) is enough.
+      - text: We can't tell without the sides
+        feedback: Angles alone are enough for similarity — that's the AA rule.
+review:
+  - type: choice
+    q: The quickest test for similar triangles is…
+    options:
+      - text: Two equal angles (AA)
+        correct: true
+      - text: One equal side
+        feedback: One side tells you very little. Two matching angles (AA) prove similarity.
+      - text: Equal areas
+        feedback: Similar triangles usually have different areas. Use AA.

@@ -1,0 +1,42 @@
+title: Ray
+minutes: 2
+cards:
+  - type: hook
+    text: A torch beam starts at the bulb and goes on and on. Is it a line, a segment, or something else?
+    reveal: Something in between — a **ray**. It has a start but no end.
+  - type: idea
+    text: |
+      A **ray** starts at one endpoint and goes forever in one direction.
+
+      Ray **AB** starts at A and passes through B. The endpoint is always named first, so ray AB and ray BA point opposite ways.
+    svg: |
+      <svg viewBox="0 0 240 70"><line class="a thick" x1="40" y1="35" x2="225" y2="35"/><polyline class="a" points="215,28 227,35 215,42"/><circle class="dot" cx="40" cy="35" r="4"/><circle class="dot" cx="130" cy="35" r="4"/><text x="34" y="58">A</text><text x="125" y="58">B</text><text x="150" y="22">ray AB →</text></svg>
+  - type: choice
+    q: Are ray AB and ray BA the same ray?
+    options:
+      - text: No — they start at different points and point opposite ways
+        correct: true
+        why: Right. Ray AB starts at A; ray BA starts at B and heads back through A.
+      - text: Yes — they use the same two points
+        feedback: The order matters. The first letter is where the ray starts.
+  - type: build
+  - type: choice
+    q: Which of these is best described as a ray?
+    options:
+      - text: A laser beam from a pointer
+        correct: true
+        why: It starts at the pointer and keeps going in one direction.
+      - text: The edge of a table
+        feedback: A table edge has two ends — that's a segment.
+      - text: A road that goes on forever both ways
+        feedback: Endless both ways is a line. A ray has exactly one end.
+review:
+  - type: choice
+    q: Ray PQ starts at…
+    options:
+      - text: P
+        correct: true
+      - text: Q
+        feedback: The first letter names the endpoint — ray PQ starts at P.
+      - text: The midpoint of PQ
+        feedback: A ray starts at its endpoint, the first letter — P.
